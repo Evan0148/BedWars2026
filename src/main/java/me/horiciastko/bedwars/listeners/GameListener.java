@@ -105,14 +105,10 @@ public class GameListener implements Listener {
             }
         }
 
-        if (BedWars.getInstance().getGameManager().isInBuildMode(player)) {
-            return;
-        }
-
         Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
         if (arena == null || arena.getState() != Arena.GameState.IN_GAME) {
-            // Allow OPs and admins to break blocks freely outside of a game.
-            if (player.hasPermission("bedwars.admin")) {
+            // Allow OPs and admins with build mode or bedwars.admin to break blocks freely outside of an active game.
+            if (BedWars.getInstance().getGameManager().isInBuildMode(player) || player.hasPermission("bedwars.admin")) {
                 return;
             }
             event.setCancelled(true);
@@ -197,19 +193,20 @@ public class GameListener implements Listener {
 
         Team attackerTeam = BedWars.getInstance().getGameManager().getPlayerTeam(arena, player);
         boolean isSoloTest = arena.isSoloTest();
-        boolean isAdmin = player.hasPermission("bedwars.admin") && (isSoloTest || BedWars.getInstance().getGameManager().isInBuildMode(player));
+        boolean canBypass = isSoloTest && player.hasPermission("bedwars.admin");
 
-        if (attackerTeam == null && !isAdmin) {
+        if (attackerTeam == null && !canBypass) {
             event.setCancelled(true);
             return;
         }
 
-        if (!isSoloTest && !isAdmin && attackerTeam != null && attackerTeam.getName().equals(victimTeam.getName())) {
+        if (!canBypass && attackerTeam != null && attackerTeam.getName().equals(victimTeam.getName())) {
             event.setCancelled(true);
             String msg = BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(),
                     "interact-cant-destroy-bed");
             player.sendMessage(msg);
-        } else {
+            return;
+        }
             event.setCancelled(false);
             try {
                 event.setDropItems(false);
@@ -263,7 +260,6 @@ public class GameListener implements Listener {
             for (Player p : arena.getPlayers()) {
                 BedWars.getInstance().getScoreboardManager().updateScoreboard(p);
             }
-        }
     }
 
     private void syncInvisibleArmorState() {
@@ -420,14 +416,10 @@ public class GameListener implements Listener {
             }
         }
         
-        if (BedWars.getInstance().getGameManager().isInBuildMode(player)) {
-            return;
-        }
-
         Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
         if (arena == null || arena.getState() != Arena.GameState.IN_GAME) {
-            // Allow OPs and admins to place blocks freely outside of a game.
-            if (player.hasPermission("bedwars.admin")) {
+            // Allow OPs and admins with build mode or bedwars.admin to place blocks freely outside of an active game.
+            if (BedWars.getInstance().getGameManager().isInBuildMode(player) || player.hasPermission("bedwars.admin")) {
                 return;
             }
             event.setCancelled(true);
