@@ -218,14 +218,22 @@ public class ArenaSelectorGUI extends BaseGUI {
             return;
         }
 
-        // Handle Random Join by picking a random map from the empty ones if possible, otherwise randomly from available.
-        List<Arena> emptyAvailable = available.stream()
-                .filter(a -> a.getPlayers().isEmpty())
+        // Prioritize arenas with players first, then starting arenas, then most players
+        List<Arena> withPlayers = available.stream()
+                .filter(a -> !a.getPlayers().isEmpty())
+                .sorted((a1, a2) -> {
+                    int statePrio1 = a1.getState() == Arena.GameState.STARTING ? 0 : 1;
+                    int statePrio2 = a2.getState() == Arena.GameState.STARTING ? 0 : 1;
+                    if (statePrio1 != statePrio2) {
+                        return Integer.compare(statePrio1, statePrio2);
+                    }
+                    return Integer.compare(a2.getPlayers().size(), a1.getPlayers().size());
+                })
                 .collect(Collectors.toList());
         
         Arena target;
-        if (!emptyAvailable.isEmpty()) {
-            target = emptyAvailable.get(java.util.concurrent.ThreadLocalRandom.current().nextInt(emptyAvailable.size()));
+        if (!withPlayers.isEmpty()) {
+            target = withPlayers.get(0);
         } else {
             target = available.get(java.util.concurrent.ThreadLocalRandom.current().nextInt(available.size()));
         }

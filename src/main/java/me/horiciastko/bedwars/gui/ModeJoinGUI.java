@@ -123,7 +123,19 @@ public class ModeJoinGUI extends BaseGUI {
                 .filter(a -> a.getState() == Arena.GameState.WAITING || a.getState() == Arena.GameState.STARTING)
                 .filter(a -> a.getPlayers().size() < a.getMaxPlayers())
                 .filter(a -> canUseArenaForMode(a, mode))
-                .sorted((a1, a2) -> Integer.compare(a2.getPlayers().size(), a1.getPlayers().size()))
+                .sorted((a1, a2) -> {
+                    boolean p1Has = !a1.getPlayers().isEmpty();
+                    boolean p2Has = !a2.getPlayers().isEmpty();
+                    if (p1Has != p2Has) {
+                        return p1Has ? -1 : 1;
+                    }
+                    int statePrio1 = a1.getState() == Arena.GameState.STARTING ? 0 : 1;
+                    int statePrio2 = a2.getState() == Arena.GameState.STARTING ? 0 : 1;
+                    if (statePrio1 != statePrio2) {
+                        return Integer.compare(statePrio1, statePrio2);
+                    }
+                    return Integer.compare(a2.getPlayers().size(), a1.getPlayers().size());
+                })
                 .collect(Collectors.toList());
 
         if (available.isEmpty()) {

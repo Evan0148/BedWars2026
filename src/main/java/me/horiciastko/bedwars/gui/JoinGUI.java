@@ -111,7 +111,11 @@ public class JoinGUI extends BaseGUI {
                 Arena.ArenaMode mode = findMode(playersPerTeam);
 
                 if (mode != null) {
-                    new ModeJoinGUI(mode).open(player);
+                    if (clickType.isRightClick()) {
+                        new ModeJoinGUI(mode).open(player);
+                    } else {
+                        joinQuickGame(player, mode);
+                    }
                 }
                 return;
             }
@@ -125,6 +129,11 @@ public class JoinGUI extends BaseGUI {
                 .filter(a -> a.getPlayers().size() < a.getMaxPlayers())
                 .filter(a -> canUseArenaForMode(a, mode))
                 .sorted((a1, a2) -> {
+                    boolean p1Has = !a1.getPlayers().isEmpty();
+                    boolean p2Has = !a2.getPlayers().isEmpty();
+                    if (p1Has != p2Has) {
+                        return p1Has ? -1 : 1;
+                    }
                     int statePrio1 = a1.getState() == Arena.GameState.STARTING ? 0 : 1;
                     int statePrio2 = a2.getState() == Arena.GameState.STARTING ? 0 : 1;
                     if (statePrio1 != statePrio2) {

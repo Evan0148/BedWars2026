@@ -1963,7 +1963,6 @@ public class GameListener implements Listener {
 
                 new org.bukkit.scheduler.BukkitRunnable() {
                     private org.bukkit.Location lastLocation = null;
-                    private int stepsPlaced = 0;
 
                     @Override
                     public void run() {
@@ -1974,54 +1973,69 @@ public class GameListener implements Listener {
 
                         org.bukkit.Location current = eggEntity.getLocation();
                         if (current.getWorld() == null || !current.getWorld().equals(startLocation.getWorld())
-                                || current.distance(startLocation) >= 26.0 || stepsPlaced >= 26) {
+                                || current.distance(startLocation) >= 26.0) {
                             com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG").ifPresent(s -> s.play(current));
                             eggEntity.remove();
                             this.cancel();
                             return;
                         }
 
-                        if (lastLocation == null)
+                        if (lastLocation == null) {
                             lastLocation = current.clone();
+                        }
 
                         double dist = current.distance(lastLocation);
-                        int steps = (int) Math.max(1, Math.ceil(dist * 2));
+                        int steps = (int) Math.max(1, Math.ceil(dist * 2.0));
                         org.bukkit.util.Vector vec = current.clone().subtract(lastLocation).toVector()
                                 .multiply(1.0 / steps);
-                        org.bukkit.util.Vector vel = eggEntity.getVelocity();
-                        org.bukkit.util.Vector dir = (vel != null && vel.lengthSquared() > 0.0001)
-                                ? vel.clone().setY(0) : new org.bukkit.util.Vector(1, 0, 0);
 
-                        for (int i = 0; i <= steps; i++) {
-                            org.bukkit.Location interp = lastLocation.clone().add(vec.clone().multiply(i)).subtract(0,
-                                    2,
-                                    0);
-                            if (placeBridgePair(interp, finalWool, arena, dir)) {
-                                stepsPlaced++;
-                                if (stepsPlaced >= 26) {
-                                    com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG").ifPresent(s -> s.play(current));
-                                    eggEntity.remove();
-                                    this.cancel();
-                                    return;
-                                }
+                        boolean placedThisTick = false;
+                        for (int i = 1; i <= steps; i++) {
+                            org.bukkit.Location interp = lastLocation.clone().add(vec.clone().multiply(i)).subtract(0, 2, 0);
+                            if (interp.distance(startLocation) < 1.5) {
+                                continue;
+                            }
+                            if (interp.distance(startLocation) > 26.0) {
+                                break;
+                            }
+                            if (placeBridge2x2(interp, finalWool, arena)) {
+                                placedThisTick = true;
                             }
                         }
+
+                        if (placedThisTick) {
+                            com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG")
+                                    .ifPresent(s -> s.play(current, 1.0f, (float) (0.95 + Math.random() * 0.1)));
+                        }
+
                         lastLocation = current.clone();
                     }
 
-                    private boolean placeBridgePair(org.bukkit.Location loc, Material wool, Arena arena, org.bukkit.util.Vector dir) {
-                        Block b1 = loc.getBlock();
-                        Block b2 = (Math.abs(dir.getX()) >= Math.abs(dir.getZ()))
-                                ? b1.getRelative(org.bukkit.block.BlockFace.SOUTH)
-                                : b1.getRelative(org.bukkit.block.BlockFace.EAST);
+                    private boolean placeBridge2x2(org.bukkit.Location loc, Material wool, Arena arena) {
+                        if (loc.getWorld() == null) return false;
+                        int bx = loc.getBlockX();
+                        int bz = loc.getBlockZ();
+                        int by = loc.getBlockY();
 
-                        boolean p1 = placeSingleBlock(b1, wool, arena);
-                        boolean p2 = placeSingleBlock(b2, wool, arena);
-                        return p1 || p2;
+                        int x1 = (loc.getX() - bx >= 0.5) ? bx : bx - 1;
+                        int x2 = x1 + 1;
+                        int z1 = (loc.getZ() - bz >= 0.5) ? bz : bz - 1;
+                        int z2 = z1 + 1;
+
+                        boolean placed = false;
+                        int[][] coords = { {x1, z1}, {x2, z1}, {x1, z2}, {x2, z2} };
+                        for (int[] c : coords) {
+                            Block b = loc.getWorld().getBlockAt(c[0], by, c[1]);
+                            if (placeSingleBlock(b, wool, arena)) {
+                                placed = true;
+                            }
+                        }
+                        return placed;
                     }
 
                     private boolean placeSingleBlock(Block block, Material wool, Arena arena) {
-                        if (block.getType() == Material.AIR || block.getType().name().contains("PLANT")) {
+                        if (block == null) return false;
+                        if (isReplaceable(block.getType())) {
                             boolean hasPlayer = block.getWorld()
                                     .getNearbyEntities(block.getLocation().add(0.5, 0.5, 0.5), 0.3, 0.5, 0.3).stream()
                                     .anyMatch(e -> e instanceof Player);
@@ -2033,6 +2047,14 @@ public class GameListener implements Listener {
                             }
                         }
                         return false;
+                    }
+
+                    private boolean isReplaceable(Material type) {
+                        if (type == null) return false;
+                        String name = type.name();
+                        return name.contains("AIR") || name.equals("SHORT_GRASS") || name.equals("TALL_GRASS")
+                                || name.contains("FERN") || name.contains("FLOWER") || name.contains("PLANT")
+                                || name.contains("SEAGRASS") || name.contains("KELP");
                     }
                 }.runTaskTimer(BedWars.getInstance(), 0L, 1L);
             }

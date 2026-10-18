@@ -48,10 +48,23 @@ public class JoinCommand implements SubCommand {
                 .filter(a -> a.isEnabled() || player.hasPermission("bedwars.admin"))
                 .filter(a -> a.getGroup().equalsIgnoreCase(target))
                 .filter(a -> a.getState() == Arena.GameState.WAITING || a.getState() == Arena.GameState.STARTING)
+                .filter(a -> a.getPlayers().size() < a.getMaxPlayers())
                 .collect(Collectors.toList());
 
         if (!groupArenas.isEmpty()) {
-            groupArenas.sort((a1, a2) -> Integer.compare(a2.getPlayers().size(), a1.getPlayers().size()));
+            groupArenas.sort((a1, a2) -> {
+                boolean p1Has = !a1.getPlayers().isEmpty();
+                boolean p2Has = !a2.getPlayers().isEmpty();
+                if (p1Has != p2Has) {
+                    return p1Has ? -1 : 1;
+                }
+                int statePrio1 = a1.getState() == Arena.GameState.STARTING ? 0 : 1;
+                int statePrio2 = a2.getState() == Arena.GameState.STARTING ? 0 : 1;
+                if (statePrio1 != statePrio2) {
+                    return Integer.compare(statePrio1, statePrio2);
+                }
+                return Integer.compare(a2.getPlayers().size(), a1.getPlayers().size());
+            });
             plugin.getArenaManager().joinArena(player, groupArenas.get(0));
             return;
         }
@@ -60,9 +73,22 @@ public class JoinCommand implements SubCommand {
             List<Arena> allAvailable = plugin.getArenaManager().getArenas().stream()
                     .filter(a -> a.isEnabled() || player.hasPermission("bedwars.admin"))
                     .filter(a -> a.getState() == Arena.GameState.WAITING || a.getState() == Arena.GameState.STARTING)
+                    .filter(a -> a.getPlayers().size() < a.getMaxPlayers())
                     .collect(Collectors.toList());
             if (!allAvailable.isEmpty()) {
-                allAvailable.sort((a1, a2) -> Integer.compare(a2.getPlayers().size(), a1.getPlayers().size()));
+                allAvailable.sort((a1, a2) -> {
+                    boolean p1Has = !a1.getPlayers().isEmpty();
+                    boolean p2Has = !a2.getPlayers().isEmpty();
+                    if (p1Has != p2Has) {
+                        return p1Has ? -1 : 1;
+                    }
+                    int statePrio1 = a1.getState() == Arena.GameState.STARTING ? 0 : 1;
+                    int statePrio2 = a2.getState() == Arena.GameState.STARTING ? 0 : 1;
+                    if (statePrio1 != statePrio2) {
+                        return Integer.compare(statePrio1, statePrio2);
+                    }
+                    return Integer.compare(a2.getPlayers().size(), a1.getPlayers().size());
+                });
                 plugin.getArenaManager().joinArena(player, allAvailable.get(0));
             } else {
                 player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "join-no-arenas"));
