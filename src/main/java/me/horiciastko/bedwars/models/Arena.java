@@ -124,6 +124,35 @@ public class Arena {
         return initialBedStates;
     }
 
+    public boolean isBlockPlaced(org.bukkit.block.Block block) {
+        if (block == null) return false;
+        org.bukkit.Location bLoc = block.getLocation();
+        if (placedBlocks.contains(bLoc)) return true;
+        String wName = bLoc.getWorld() != null ? bLoc.getWorld().getName() : "";
+        int bx = bLoc.getBlockX();
+        int by = bLoc.getBlockY();
+        int bz = bLoc.getBlockZ();
+        for (Location loc : placedBlocks) {
+            if (loc.getWorld() != null && loc.getWorld().getName().equalsIgnoreCase(wName)
+                    && loc.getBlockX() == bx && loc.getBlockY() == by && loc.getBlockZ() == bz) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removePlacedBlock(org.bukkit.block.Block block) {
+        if (block == null) return;
+        org.bukkit.Location bLoc = block.getLocation();
+        placedBlocks.remove(bLoc);
+        String wName = bLoc.getWorld() != null ? bLoc.getWorld().getName() : "";
+        int bx = bLoc.getBlockX();
+        int by = bLoc.getBlockY();
+        int bz = bLoc.getBlockZ();
+        placedBlocks.removeIf(loc -> loc.getWorld() != null && loc.getWorld().getName().equalsIgnoreCase(wName)
+                && loc.getBlockX() == bx && loc.getBlockY() == by && loc.getBlockZ() == bz);
+    }
+
     public void reset() {
         state = GameState.WAITING;
         ticks = 0;

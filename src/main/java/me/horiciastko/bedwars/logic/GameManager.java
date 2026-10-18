@@ -300,14 +300,14 @@ public class GameManager {
         arena.getInitialBedStates().clear();
         for (Team team : arena.getTeams()) {
             team.getBedBlockLocations().clear();
-            if (team.getBedLocation() != null) {
+            if (team.getBedLocation() != null && team.getBedLocation().getWorld() != null) {
                 org.bukkit.block.Block b = team.getBedLocation().getBlock();
-                for (int x = -2; x <= 2; x++) {
+                for (int x = -3; x <= 3; x++) {
                     for (int y = -2; y <= 2; y++) {
-                        for (int z = -2; z <= 2; z++) {
+                        for (int z = -3; z <= 3; z++) {
                             org.bukkit.block.Block rel = b.getRelative(x, y, z);
                             String name = rel.getType().name();
-                            if (name.endsWith("_BED") || name.equals("BED_BLOCK")) {
+                            if (name.contains("BED")) {
                                 team.getBedBlockLocations().add(rel.getLocation());
                                 arena.getInitialBedStates().add(rel.getState());
                             }
@@ -2274,6 +2274,12 @@ public class GameManager {
             if (team.getBedLocation() != null) {
                 team.setBedLocation(updateLocation(team.getBedLocation(), newWorld));
             }
+            java.util.Set<org.bukkit.Location> updatedBedBlocks = new java.util.HashSet<>();
+            for (org.bukkit.Location loc : team.getBedBlockLocations()) {
+                updatedBedBlocks.add(updateLocation(loc, newWorld));
+            }
+            team.getBedBlockLocations().clear();
+            team.getBedBlockLocations().addAll(updatedBedBlocks);
             if (team.getShopLocation() != null) {
                 team.setShopLocation(updateLocation(team.getShopLocation(), newWorld));
             }

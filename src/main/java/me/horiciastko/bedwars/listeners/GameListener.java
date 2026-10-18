@@ -122,7 +122,7 @@ public class GameListener implements Listener {
         Block block = event.getBlock();
 
         String blockName = block.getType().name();
-        if (blockName.endsWith("_BED") || blockName.equals("BED_BLOCK")) {
+        if (blockName.contains("BED")) {
             handleBedBreak(event, player, arena);
             return;
         } else {
@@ -133,8 +133,8 @@ public class GameListener implements Listener {
                 }
             }
 
-            if (arena.getPlacedBlocks().contains(block.getLocation())) {
-                arena.getPlacedBlocks().remove(block.getLocation());
+            if (arena.isBlockPlaced(block)) {
+                arena.removePlacedBlock(block);
                 // Sponge/wet_sponge: suppress the default drop (which would be wet_sponge) and
                 // give back a regular dry sponge instead
                 if (block.getType() == Material.SPONGE || block.getType() == Material.WET_SPONGE) {
@@ -151,11 +151,28 @@ public class GameListener implements Listener {
     }
 
     private void handleBedBreak(BlockBreakEvent event, Player player, Arena arena) {
+        Block block = event.getBlock();
         Team victimTeam = null;
         for (Team team : arena.getTeams()) {
-            if (isBedBlock(team, event.getBlock())) {
+            if (isBedBlock(team, block)) {
                 victimTeam = team;
                 break;
+            }
+        }
+
+        // Fallback: If not matched by exact registered locations, find closest team bed within 6 blocks
+        if (victimTeam == null) {
+            double closest = 6.0;
+            for (Team team : arena.getTeams()) {
+                if (team.getBedLocation() != null && team.getBedLocation().getWorld() != null) {
+                    if (team.getBedLocation().getWorld().getName().equalsIgnoreCase(block.getWorld().getName())) {
+                        double dist = block.getLocation().distance(team.getBedLocation());
+                        if (dist < closest) {
+                            closest = dist;
+                            victimTeam = team;
+                        }
+                    }
+                }
             }
         }
 
@@ -168,27 +185,47 @@ public class GameListener implements Listener {
         }
 
         if (victimTeam.isBedBroken()) {
-            event.setCancelled(true);
-            clearBedBlocks(victimTeam, event.getBlock());
+            event.setCancelled(false);
+            try {
+                event.setDropItems(false);
+                event.setExpToDrop(0);
+            } catch (Throwable ignored) {
+            }
+            clearBedBlocks(victimTeam, block);
             return;
         }
 
         Team attackerTeam = BedWars.getInstance().getGameManager().getPlayerTeam(arena, player);
-        boolean adminBreak = BedWars.getInstance().getGameManager().isInBuildMode(player);
+        boolean isSoloTest = arena.isSoloTest();
+        boolean isAdmin = player.hasPermission("bedwars.admin") && (isSoloTest || BedWars.getInstance().getGameManager().isInBuildMode(player));
 
-        if (attackerTeam == null && !adminBreak) {
+        if (attackerTeam == null && !isAdmin) {
             event.setCancelled(true);
             return;
         }
 
-        if (!adminBreak && attackerTeam.getName().equals(victimTeam.getName())) {
+        if (!isSoloTest && !isAdmin && attackerTeam != null && attackerTeam.getName().equals(victimTeam.getName())) {
             event.setCancelled(true);
             String msg = BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(),
                     "interact-cant-destroy-bed");
             player.sendMessage(msg);
         } else {
-            event.setCancelled(true);
-            clearBedBlocks(victimTeam, event.getBlock());
+            event.setCancelled(false);
+            try {
+                event.setDropItems(false);
+                event.setExpToDrop(0);
+            } catch (Throwable ignored) {
+            }
+            clearBedBlocks(victimTeam, block);
+
+            final Team finalVictim = victimTeam;
+            final Block finalBlock = block;
+            new org.bukkit.scheduler.BukkitRunnable() {
+                @Override
+                public void run() {
+                    clearBedBlocks(finalVictim, finalBlock);
+                }
+            }.runTaskLater(BedWars.getInstance(), 1L);
 
             victimTeam.setBedBroken(true);
 
@@ -314,18 +351,19 @@ public class GameListener implements Listener {
         if (team == null || block == null)
             return false;
         org.bukkit.Location bLoc = block.getLocation();
+        String bWorld = bLoc.getWorld() != null ? bLoc.getWorld().getName() : "";
         for (org.bukkit.Location reg : team.getBedBlockLocations()) {
-            if (reg.getWorld() != null && reg.getWorld().equals(bLoc.getWorld())
+            if (reg.getWorld() != null && reg.getWorld().getName().equalsIgnoreCase(bWorld)
                     && reg.getBlockX() == bLoc.getBlockX()
                     && reg.getBlockY() == bLoc.getBlockY()
                     && reg.getBlockZ() == bLoc.getBlockZ()) {
                 return true;
             }
         }
-        if (team.getBedLocation() != null) {
+        if (team.getBedLocation() != null && team.getBedLocation().getWorld() != null) {
             org.bukkit.Location bedLoc = team.getBedLocation();
-            if (bLoc.getWorld() != null && bLoc.getWorld().equals(bedLoc.getWorld())) {
-                return bLoc.distance(bedLoc) <= 2.2;
+            if (bedLoc.getWorld().getName().equalsIgnoreCase(bWorld)) {
+                return bLoc.distance(bedLoc) <= 3.5;
             }
         }
         return false;
@@ -336,21 +374,34 @@ public class GameListener implements Listener {
             for (org.bukkit.Location loc : team.getBedBlockLocations()) {
                 try {
                     if (loc.getWorld() != null) {
-                        loc.getBlock().setType(Material.AIR);
+                        loc.getBlock().setType(Material.AIR, false);
                     }
                 } catch (Exception ignored) {
                 }
             }
+            if (team.getBedLocation() != null && team.getBedLocation().getWorld() != null) {
+                org.bukkit.Location center = team.getBedLocation();
+                for (int x = -3; x <= 3; x++) {
+                    for (int y = -2; y <= 2; y++) {
+                        for (int z = -3; z <= 3; z++) {
+                            Block b = center.clone().add(x, y, z).getBlock();
+                            if (b.getType().name().contains("BED")) {
+                                b.setType(Material.AIR, false);
+                            }
+                        }
+                    }
+                }
+            }
         }
         if (block != null) {
-            block.setType(Material.AIR);
+            block.setType(Material.AIR, false);
             for (org.bukkit.block.BlockFace face : new org.bukkit.block.BlockFace[] {
                     org.bukkit.block.BlockFace.NORTH, org.bukkit.block.BlockFace.SOUTH,
-                    org.bukkit.block.BlockFace.EAST, org.bukkit.block.BlockFace.WEST }) {
+                    org.bukkit.block.BlockFace.EAST, org.bukkit.block.BlockFace.WEST,
+                    org.bukkit.block.BlockFace.UP, org.bukkit.block.BlockFace.DOWN }) {
                 Block adjacent = block.getRelative(face);
-                String adjName = adjacent.getType().name();
-                if (adjName.endsWith("_BED") || adjName.equals("BED_BLOCK")) {
-                    adjacent.setType(Material.AIR);
+                if (adjacent.getType().name().contains("BED")) {
+                    adjacent.setType(Material.AIR, false);
                 }
             }
         }
