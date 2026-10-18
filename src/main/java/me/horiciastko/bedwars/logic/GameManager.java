@@ -334,6 +334,7 @@ public class GameManager {
             p.setGameMode(org.bukkit.GameMode.SURVIVAL);
             p.setFoodLevel(20);
             p.setHealth(20);
+            setBuildMode(p, false);
 
             Team team = getPlayerTeam(arena, p);
             if (team != null) {

@@ -116,6 +116,13 @@ public class AdminCommand implements SubCommand {
                 return;
             }
             boolean enable = args[2].equalsIgnoreCase("on");
+            if (enable) {
+                me.horiciastko.bedwars.models.Arena current = plugin.getArenaManager().getPlayerArena(player);
+                if (current != null && current.getState() == me.horiciastko.bedwars.models.Arena.GameState.IN_GAME) {
+                    player.sendMessage("§c你不能在正在进行的游戏中开启建造模式！");
+                    return;
+                }
+            }
             plugin.getGameManager().setBuildMode(player, enable);
             String status = enable ? plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-build-enabled")
                                   : plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-build-disabled");

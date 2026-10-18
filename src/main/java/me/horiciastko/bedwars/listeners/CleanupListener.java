@@ -15,8 +15,8 @@ public class CleanupListener implements Listener {
         // can build/break blocks in any world without running /bw admin build on manually.
         if (event.getPlayer().hasPermission("bedwars.admin")) {
             String saved = BedWars.getInstance().getDatabaseManager().getSetting("build_mode_" + event.getPlayer().getUniqueId());
-            // First time joining (null): default ON. Otherwise restore the last known state.
-            boolean enable = saved == null || "1".equals(saved);
+            // Default OFF unless explicitly enabled previously via /bw admin build on.
+            boolean enable = "1".equals(saved);
             BedWars.getInstance().getGameManager().setBuildMode(event.getPlayer(), enable);
 
             org.bukkit.Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> {

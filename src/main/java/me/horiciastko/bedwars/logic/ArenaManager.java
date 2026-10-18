@@ -677,6 +677,7 @@ public class ArenaManager {
             arena.getPlayers().add(player);
             setPlayerArena(player, arena);
             plugin.getSignManager().updateSigns(arena);
+            plugin.getGameManager().setBuildMode(player, false);
 
             player.setGameMode(org.bukkit.GameMode.ADVENTURE);
             plugin.getGameManager().applyPvpSettings(player, arena);
