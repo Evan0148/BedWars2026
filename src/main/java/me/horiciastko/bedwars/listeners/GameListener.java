@@ -1768,6 +1768,10 @@ public class GameListener implements Listener {
     public void onMobSpawn(CreatureSpawnEvent event) {
         for (Arena arena : BedWars.getInstance().getArenaManager().getArenas()) {
             if (arena.getWorldName() != null && arena.getWorldName().equals(event.getLocation().getWorld().getName())) {
+                if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SILVERFISH_BLOCK) {
+                    event.setCancelled(true);
+                    return;
+                }
                 if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM
                         || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
                         || event.getEntityType() == EntityType.VILLAGER
@@ -1885,7 +1889,14 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
-    public void onDragonBlockChange(EntityChangeBlockEvent event) {
+    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+        // Prevent Silverfish (bedbugs) from infesting stone, breaking stone, or corrupting map blocks
+        if (event.getEntityType() == EntityType.SILVERFISH || event.getEntity() instanceof org.bukkit.entity.Silverfish
+                || (event.getEntity() != null && event.getEntity().getScoreboardTags().contains("bw_mob"))) {
+            event.setCancelled(true);
+            return;
+        }
+
         if (event.getEntity() instanceof EnderDragon || event.getEntityType() == EntityType.ENDER_DRAGON) {
             if (hasScoreboardTag(event.getEntity(), "bw_sudden_death")) {
                 String bName = event.getBlock().getType().name();
@@ -1895,6 +1906,14 @@ public class GameListener implements Listener {
                 }
                 return;
             }
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityInteract(org.bukkit.event.entity.EntityInteractEvent event) {
+        if (event.getEntityType() == EntityType.SILVERFISH
+                || (event.getEntity() != null && event.getEntity().getScoreboardTags().contains("bw_mob"))) {
             event.setCancelled(true);
         }
     }
@@ -1952,28 +1971,21 @@ public class GameListener implements Listener {
                             org.bukkit.Location interp = lastLocation.clone().add(vec.clone().multiply(i)).subtract(0,
                                     2,
                                     0);
-                            placeBridgeBlocks(interp, finalWool, arena, event.getEntity().getVelocity());
+                            placeBridgeBlocks(interp, finalWool, arena);
                         }
                         lastLocation = current.clone();
                     }
 
-                    private void placeBridgeBlocks(org.bukkit.Location loc, Material wool, Arena arena,
-                            org.bukkit.util.Vector vel) {
-                        org.bukkit.util.Vector dir = vel.clone().setY(0).normalize();
-                        org.bukkit.util.Vector side = new org.bukkit.util.Vector(-dir.getZ(), 0, dir.getX());
+                    private void placeBridgeBlocks(org.bukkit.Location loc, Material wool, Arena arena) {
+                        Block block = loc.getBlock();
+                        if (block.getType() == Material.AIR || block.getType().name().contains("PLANT")) {
+                            boolean hasPlayer = block.getWorld()
+                                    .getNearbyEntities(block.getLocation().add(0.5, 0.5, 0.5), 0.3, 0.5, 0.3).stream()
+                                    .anyMatch(e -> e instanceof Player);
 
-                        for (int offset = -1; offset <= 1; offset++) {
-                            org.bukkit.Location bLoc = loc.clone().add(side.clone().multiply(offset));
-                            Block block = bLoc.getBlock();
-                            if (block.getType() == Material.AIR || block.getType().name().contains("PLANT")) {
-                                boolean hasPlayer = bLoc.getWorld()
-                                        .getNearbyEntities(bLoc.clone().add(0.5, 0.5, 0.5), 0.3, 0.5, 0.3).stream()
-                                        .anyMatch(e -> e instanceof Player);
-
-                                if (!hasPlayer) {
-                                    block.setType(wool);
-                                    arena.getPlacedBlocks().add(block.getLocation());
-                                }
+                            if (!hasPlayer) {
+                                block.setType(wool);
+                                arena.getPlacedBlocks().add(block.getLocation());
                             }
                         }
                     }
