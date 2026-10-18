@@ -1948,17 +1948,30 @@ public class GameListener implements Listener {
                         .orElse(com.cryptomorin.xseries.XMaterial.WHITE_WOOL).parseMaterial();
 
                 final Material finalWool = wool;
+                final org.bukkit.entity.Projectile eggEntity = event.getEntity();
+                final org.bukkit.Location startLocation = eggEntity.getLocation().clone();
+                eggEntity.setVelocity(eggEntity.getVelocity().clone().multiply(0.85));
+
                 new org.bukkit.scheduler.BukkitRunnable() {
                     private org.bukkit.Location lastLocation = null;
+                    private int blocksPlaced = 0;
 
                     @Override
                     public void run() {
-                        if (event.getEntity().isDead() || !event.getEntity().isValid()) {
+                        if (eggEntity.isDead() || !eggEntity.isValid()) {
                             this.cancel();
                             return;
                         }
 
-                        org.bukkit.Location current = event.getEntity().getLocation();
+                        org.bukkit.Location current = eggEntity.getLocation();
+                        if (current.getWorld() == null || !current.getWorld().equals(startLocation.getWorld())
+                                || current.distance(startLocation) >= 24.0 || blocksPlaced >= 24) {
+                            com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG").ifPresent(s -> s.play(current));
+                            eggEntity.remove();
+                            this.cancel();
+                            return;
+                        }
+
                         if (lastLocation == null)
                             lastLocation = current.clone();
 
@@ -1971,12 +1984,20 @@ public class GameListener implements Listener {
                             org.bukkit.Location interp = lastLocation.clone().add(vec.clone().multiply(i)).subtract(0,
                                     2,
                                     0);
-                            placeBridgeBlocks(interp, finalWool, arena);
+                            if (placeBridgeBlocks(interp, finalWool, arena)) {
+                                blocksPlaced++;
+                                if (blocksPlaced >= 24) {
+                                    com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG").ifPresent(s -> s.play(current));
+                                    eggEntity.remove();
+                                    this.cancel();
+                                    return;
+                                }
+                            }
                         }
                         lastLocation = current.clone();
                     }
 
-                    private void placeBridgeBlocks(org.bukkit.Location loc, Material wool, Arena arena) {
+                    private boolean placeBridgeBlocks(org.bukkit.Location loc, Material wool, Arena arena) {
                         Block block = loc.getBlock();
                         if (block.getType() == Material.AIR || block.getType().name().contains("PLANT")) {
                             boolean hasPlayer = block.getWorld()
@@ -1986,8 +2007,10 @@ public class GameListener implements Listener {
                             if (!hasPlayer) {
                                 block.setType(wool);
                                 arena.getPlacedBlocks().add(block.getLocation());
+                                return true;
                             }
                         }
+                        return false;
                     }
                 }.runTaskTimer(BedWars.getInstance(), 0L, 1L);
             }
