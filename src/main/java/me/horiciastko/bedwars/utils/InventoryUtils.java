@@ -20,6 +20,18 @@ public class InventoryUtils {
         return false;
     }
 
+    public static int countItems(Player player, Material material) {
+        if (material == null)
+            return 0;
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                count += item.getAmount();
+            }
+        }
+        return count;
+    }
+
     public static void removeItems(Player player, Material material, int amount) {
         if (amount <= 0)
             return;

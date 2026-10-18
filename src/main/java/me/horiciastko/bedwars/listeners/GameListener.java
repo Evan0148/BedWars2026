@@ -1093,6 +1093,20 @@ public class GameListener implements Listener {
         if (arena == null || arena.getState() != Arena.GameState.IN_GAME)
             return;
 
+        // Feature 1: Left-click Ender Chest to quickly store held item
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK
+                && event.getClickedBlock() != null
+                && event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+            try {
+                if (event.getHand() == org.bukkit.inventory.EquipmentSlot.OFF_HAND) {
+                    return;
+                }
+            } catch (NoSuchMethodError ignored) {
+            }
+            handleEnderChestQuickDeposit(player, event);
+            return;
+        }
+
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK
                 && event.getClickedBlock() != null
                 && event.getClickedBlock().getType().name().contains("BED")) {
@@ -2095,6 +2109,65 @@ public class GameListener implements Listener {
         } catch (NoSuchMethodError e) {
             return null;
         }
+    }
+
+    private void handleEnderChestQuickDeposit(Player player, PlayerInteractEvent event) {
+        event.setCancelled(true);
+
+        ItemStack inHand;
+        try {
+            inHand = player.getInventory().getItemInMainHand();
+        } catch (NoSuchMethodError e) {
+            inHand = player.getItemInHand();
+        }
+
+        if (inHand == null || inHand.getType() == Material.AIR) {
+            return;
+        }
+
+        if (isBwPermanentItem(inHand)) {
+            player.sendMessage(BedWars.getInstance().getLanguageManager()
+                    .getMessage(player.getUniqueId(), "interact-cant-store-item"));
+            BedWars.getInstance().getSoundManager().playSound(player, "shop-insufficient-money");
+            return;
+        }
+
+        org.bukkit.inventory.Inventory ec = player.getEnderChest();
+        java.util.HashMap<Integer, ItemStack> leftover = ec.addItem(inHand);
+
+        if (leftover.isEmpty()) {
+            try {
+                player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+            } catch (NoSuchMethodError e) {
+                player.setItemInHand(new ItemStack(Material.AIR));
+            }
+            player.playSound(event.getClickedBlock().getLocation(), org.bukkit.Sound.ENTITY_ITEM_PICKUP, 0.7f, 1.3f);
+            String name = (inHand.getItemMeta() != null && inHand.getItemMeta().hasDisplayName())
+                    ? inHand.getItemMeta().getDisplayName()
+                    : inHand.getType().name();
+            player.sendMessage(BedWars.getInstance().getLanguageManager()
+                    .getMessage(player.getUniqueId(), "enderchest-stored").replace("%item%", name));
+        } else {
+            ItemStack remaining = leftover.get(0);
+            if (remaining.getAmount() == inHand.getAmount()) {
+                player.sendMessage(BedWars.getInstance().getLanguageManager()
+                        .getMessage(player.getUniqueId(), "enderchest-full"));
+                BedWars.getInstance().getSoundManager().playSound(player, "shop-insufficient-money");
+            } else {
+                try {
+                    player.getInventory().setItemInMainHand(remaining);
+                } catch (NoSuchMethodError e) {
+                    player.setItemInHand(remaining);
+                }
+                player.playSound(event.getClickedBlock().getLocation(), org.bukkit.Sound.ENTITY_ITEM_PICKUP, 0.7f, 1.3f);
+                String name = (inHand.getItemMeta() != null && inHand.getItemMeta().hasDisplayName())
+                        ? inHand.getItemMeta().getDisplayName()
+                        : inHand.getType().name();
+                player.sendMessage(BedWars.getInstance().getLanguageManager()
+                        .getMessage(player.getUniqueId(), "enderchest-stored").replace("%item%", name));
+            }
+        }
+        player.updateInventory();
     }
 }
 

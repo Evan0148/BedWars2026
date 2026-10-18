@@ -363,6 +363,21 @@ public class ShopGUI extends BaseGUI {
                     "shop-right-click-add"));
         }
 
+        if (!xMat.name().contains("GLASS_PANE") && xMat != XMaterial.BARRIER) {
+            Material checkMat = xMat.parseMaterial();
+            boolean isStackable = (checkMat != null && checkMat.getMaxStackSize() > 1
+                    && !xMat.name().endsWith("_SWORD") && !xMat.name().endsWith("_PICKAXE")
+                    && !xMat.name().endsWith("_AXE") && !xMat.name().endsWith("_BOOTS")
+                    && !xMat.name().endsWith("_HELMET") && !xMat.name().endsWith("_CHESTPLATE")
+                    && !xMat.name().endsWith("_LEGGINGS") && xMat != XMaterial.SHEARS
+                    && xMat != XMaterial.BOW && xMat != XMaterial.POTION
+                    && !itemData.contains("tiers"));
+            if (isStackable) {
+                builder.addLoreLine(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(),
+                        "shop-shift-buy-stack"));
+            }
+        }
+
         ItemStack built = builder.build();
         applyPotionMeta(built, itemData);
         return built;
@@ -446,26 +461,36 @@ public class ShopGUI extends BaseGUI {
         }
 
         Map<Integer, String[]> customQuickBuy = shopManager.getPlayerQuickBuy(player);
+        ConfigurationSection itemData = null;
         if (customQuickBuy.containsKey(slot)) {
             String[] info = customQuickBuy.get(slot);
             if (info[0].equalsIgnoreCase("EMPTY")) {
                 new QuickBuySelectorGUI(slot, 0).open(player);
                 return;
             }
-            ConfigurationSection itemData = shopConfig
-                    .getConfigurationSection("sections." + info[0] + ".items." + info[1]);
-            if (itemData != null)
-                processPurchase(player, itemData);
+            itemData = shopConfig.getConfigurationSection("sections." + info[0] + ".items." + info[1]);
         } else {
             ConfigurationSection defaults = shopConfig.getConfigurationSection("sections.quick_buy.items");
             if (defaults != null) {
                 for (String key : defaults.getKeys(false)) {
                     if (defaults.getInt(key + ".slot") == slot) {
-                        processPurchase(player, defaults.getConfigurationSection(key));
+                        itemData = defaults.getConfigurationSection(key);
                         break;
                     }
                 }
             }
+        }
+
+        if (itemData != null) {
+            if (clickType.isShiftClick() && clickType.isLeftClick()) {
+                buyStack(player, itemData);
+                return;
+            }
+            if (clickType.isRightClick()) {
+                processPurchase(player, itemData, 4);
+                return;
+            }
+            processPurchase(player, itemData, 1);
         }
     }
 
@@ -491,7 +516,7 @@ public class ShopGUI extends BaseGUI {
         if (itemData == null)
             return;
 
-        if (clickType.isShiftClick()) {
+        if (clickType.isShiftClick() && clickType.isRightClick()) {
             Integer targetSlot = findFirstAvailableQuickBuySlot(player, shopManager, shopConfig);
             if (targetSlot != null) {
                 shopManager.updateQuickBuy(player, targetSlot, this.category, itemKey);
@@ -507,6 +532,11 @@ public class ShopGUI extends BaseGUI {
             } else {
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-quick-buy-full"));
             }
+            return;
+        }
+
+        if (clickType.isShiftClick() && clickType.isLeftClick()) {
+            buyStack(player, itemData);
             return;
         }
 
@@ -541,6 +571,66 @@ public class ShopGUI extends BaseGUI {
             }
         }
         return itemSlots[0];
+    }
+
+    private void buyStack(Player player, ConfigurationSection itemData) {
+        XMaterial xMat = XMaterial.matchXMaterial(itemData.getString("material", "BARRIER")).orElse(XMaterial.BARRIER);
+        Material mat = xMat.parseMaterial();
+        boolean isBulkable = !xMat.name().endsWith("_SWORD") && !xMat.name().endsWith("_PICKAXE")
+                && !xMat.name().endsWith("_AXE") && !xMat.name().endsWith("_BOOTS")
+                && !xMat.name().endsWith("_HELMET") && !xMat.name().endsWith("_CHESTPLATE")
+                && !xMat.name().endsWith("_LEGGINGS") && xMat != XMaterial.SHEARS
+                && xMat != XMaterial.BOW && xMat != XMaterial.POTION
+                && !itemData.contains("tiers");
+
+        if (!isBulkable || mat == null || mat.getMaxStackSize() <= 1) {
+            processPurchase(player, itemData, 1);
+            return;
+        }
+
+        int baseAmount = Math.max(1, itemData.getInt("amount", 1));
+        int maxStack = mat.getMaxStackSize();
+        int targetBatches = Math.max(1, maxStack / baseAmount);
+
+        int costPerBatch = itemData.getInt("cost", 0);
+        XMaterial xCurrency = XMaterial.matchXMaterial(itemData.getString("currency", "IRON_INGOT"))
+                .orElse(XMaterial.IRON_INGOT);
+
+        me.horiciastko.bedwars.models.Arena currentArena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
+        boolean isExpMode = (currentArena != null && currentArena.isExpMode());
+        int unitCost = costPerBatch;
+        int availableCurrency = 0;
+
+        if (isExpMode && xCurrency != XMaterial.DIAMOND) {
+            if (xCurrency == XMaterial.IRON_INGOT) {
+                unitCost = costPerBatch * 1;
+            } else if (xCurrency == XMaterial.GOLD_INGOT) {
+                unitCost = costPerBatch * 4;
+            } else if (xCurrency == XMaterial.EMERALD) {
+                unitCost = costPerBatch * 20;
+            } else {
+                unitCost = costPerBatch * 1;
+            }
+            availableCurrency = player.getLevel();
+        } else {
+            Material currencyMat = xCurrency.parseMaterial();
+            availableCurrency = (currencyMat != null) ? me.horiciastko.bedwars.utils.InventoryUtils.countItems(player, currencyMat) : 0;
+        }
+
+        int affordableBatches;
+        if (unitCost <= 0) {
+            affordableBatches = targetBatches;
+        } else {
+            affordableBatches = availableCurrency / unitCost;
+        }
+
+        if (affordableBatches <= 0) {
+            processPurchase(player, itemData, targetBatches);
+            return;
+        }
+
+        int batchesToBuy = Math.min(targetBatches, affordableBatches);
+        processPurchase(player, itemData, batchesToBuy);
     }
 
     private void processPurchase(Player player, ConfigurationSection itemData) {
