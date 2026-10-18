@@ -1954,7 +1954,7 @@ public class GameListener implements Listener {
 
                 new org.bukkit.scheduler.BukkitRunnable() {
                     private org.bukkit.Location lastLocation = null;
-                    private int blocksPlaced = 0;
+                    private int stepsPlaced = 0;
 
                     @Override
                     public void run() {
@@ -1965,7 +1965,7 @@ public class GameListener implements Listener {
 
                         org.bukkit.Location current = eggEntity.getLocation();
                         if (current.getWorld() == null || !current.getWorld().equals(startLocation.getWorld())
-                                || current.distance(startLocation) >= 24.0 || blocksPlaced >= 24) {
+                                || current.distance(startLocation) >= 26.0 || stepsPlaced >= 26) {
                             com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG").ifPresent(s -> s.play(current));
                             eggEntity.remove();
                             this.cancel();
@@ -1979,14 +1979,17 @@ public class GameListener implements Listener {
                         int steps = (int) Math.max(1, Math.ceil(dist * 2));
                         org.bukkit.util.Vector vec = current.clone().subtract(lastLocation).toVector()
                                 .multiply(1.0 / steps);
+                        org.bukkit.util.Vector vel = eggEntity.getVelocity();
+                        org.bukkit.util.Vector dir = (vel != null && vel.lengthSquared() > 0.0001)
+                                ? vel.clone().setY(0) : new org.bukkit.util.Vector(1, 0, 0);
 
                         for (int i = 0; i <= steps; i++) {
                             org.bukkit.Location interp = lastLocation.clone().add(vec.clone().multiply(i)).subtract(0,
                                     2,
                                     0);
-                            if (placeBridgeBlocks(interp, finalWool, arena)) {
-                                blocksPlaced++;
-                                if (blocksPlaced >= 24) {
+                            if (placeBridgePair(interp, finalWool, arena, dir)) {
+                                stepsPlaced++;
+                                if (stepsPlaced >= 26) {
                                     com.cryptomorin.xseries.XSound.matchXSound("ENTITY_CHICKEN_EGG").ifPresent(s -> s.play(current));
                                     eggEntity.remove();
                                     this.cancel();
@@ -1997,8 +2000,18 @@ public class GameListener implements Listener {
                         lastLocation = current.clone();
                     }
 
-                    private boolean placeBridgeBlocks(org.bukkit.Location loc, Material wool, Arena arena) {
-                        Block block = loc.getBlock();
+                    private boolean placeBridgePair(org.bukkit.Location loc, Material wool, Arena arena, org.bukkit.util.Vector dir) {
+                        Block b1 = loc.getBlock();
+                        Block b2 = (Math.abs(dir.getX()) >= Math.abs(dir.getZ()))
+                                ? b1.getRelative(org.bukkit.block.BlockFace.SOUTH)
+                                : b1.getRelative(org.bukkit.block.BlockFace.EAST);
+
+                        boolean p1 = placeSingleBlock(b1, wool, arena);
+                        boolean p2 = placeSingleBlock(b2, wool, arena);
+                        return p1 || p2;
+                    }
+
+                    private boolean placeSingleBlock(Block block, Material wool, Arena arena) {
                         if (block.getType() == Material.AIR || block.getType().name().contains("PLANT")) {
                             boolean hasPlayer = block.getWorld()
                                     .getNearbyEntities(block.getLocation().add(0.5, 0.5, 0.5), 0.3, 0.5, 0.3).stream()
