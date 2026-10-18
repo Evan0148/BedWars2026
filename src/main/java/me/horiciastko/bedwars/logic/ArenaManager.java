@@ -589,6 +589,9 @@ public class ArenaManager {
             player.getInventory().clear();
             player.getInventory().setArmorContents(null);
             player.getEnderChest().clear();
+            player.setExp(0);
+            player.setLevel(0);
+            player.setTotalExperience(0);
             for (org.bukkit.potion.PotionEffect effect : player.getActivePotionEffects()) {
                 player.removePotionEffect(effect.getType());
             }

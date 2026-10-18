@@ -12,50 +12,50 @@ public class ArenaLocationManagementGUI extends BaseGUI {
     private final Arena arena;
 
     public ArenaLocationManagementGUI(Arena arena) {
-        super("§8Locations: §1" + arena.getName(), 3);
+        super("§8坐标状态管理: §1" + arena.getName(), 3);
         this.arena = arena;
     }
 
     @Override
     public void setContents(Player player) {
         inventory.setItem(26, new ItemBuilder(Material.ARROW)
-                .setName("§cBack")
-                .setLore("§7Return to settings")
+                .setName("§c返回上一级")
+                .setLore("§7返回房间主设置")
                 .build());
 
         if (arena.getPos1() != null) {
             inventory.setItem(11, new ItemBuilder(Material.LIME_CONCRETE)
-                    .setName("§aPos 1")
-                    .setLore("§7Status: §aSet", "", "§eClick to Clear")
+                    .setName("§a边界点 1 (Pos 1)")
+                    .setLore("§7状态: §a已设置", "", "§e点击清除坐标")
                     .build());
         } else {
             inventory.setItem(11, new ItemBuilder(Material.RED_CONCRETE)
-                    .setName("§cPos 1")
-                    .setLore("§7Status: §cNot Set")
+                    .setName("§c边界点 1 (Pos 1)")
+                    .setLore("§7状态: §c未设置")
                     .build());
         }
 
         if (arena.getPos2() != null) {
             inventory.setItem(13, new ItemBuilder(Material.LIME_CONCRETE)
-                    .setName("§aPos 2")
-                    .setLore("§7Status: §aSet", "", "§eClick to Clear")
+                    .setName("§a边界点 2 (Pos 2)")
+                    .setLore("§7状态: §a已设置", "", "§e点击清除坐标")
                     .build());
         } else {
             inventory.setItem(13, new ItemBuilder(Material.RED_CONCRETE)
-                    .setName("§cPos 2")
-                    .setLore("§7Status: §cNot Set")
+                    .setName("§c边界点 2 (Pos 2)")
+                    .setLore("§7状态: §c未设置")
                     .build());
         }
 
         if (arena.getLobbyLocation() != null) {
             inventory.setItem(15, new ItemBuilder(Material.LIME_CONCRETE)
-                    .setName("§aLobby")
-                    .setLore("§7Status: §aSet", "", "§eClick to Clear")
+                    .setName("§a等待大厅出生点")
+                    .setLore("§7状态: §a已设置", "", "§e点击清除坐标")
                     .build());
         } else {
             inventory.setItem(15, new ItemBuilder(Material.RED_CONCRETE)
-                    .setName("§cLobby")
-                    .setLore("§7Status: §cNot Set")
+                    .setName("§c等待大厅出生点")
+                    .setLore("§7状态: §c未设置")
                     .build());
         }
 

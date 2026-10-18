@@ -153,7 +153,7 @@ public class GameListener implements Listener {
     private void handleBedBreak(BlockBreakEvent event, Player player, Arena arena) {
         Team victimTeam = null;
         for (Team team : arena.getTeams()) {
-            if (isBedBlock(team.getBedLocation(), event.getBlock())) {
+            if (isBedBlock(team, event.getBlock())) {
                 victimTeam = team;
                 break;
             }
@@ -169,7 +169,7 @@ public class GameListener implements Listener {
 
         if (victimTeam.isBedBroken()) {
             event.setCancelled(true);
-            clearBedBlocks(event.getBlock());
+            clearBedBlocks(victimTeam, event.getBlock());
             return;
         }
 
@@ -188,7 +188,7 @@ public class GameListener implements Listener {
             player.sendMessage(msg);
         } else {
             event.setCancelled(true);
-            clearBedBlocks(event.getBlock());
+            clearBedBlocks(victimTeam, event.getBlock());
 
             victimTeam.setBedBroken(true);
 
@@ -310,21 +310,48 @@ public class GameListener implements Listener {
         return item == null ? new ItemStack(Material.AIR) : item;
     }
 
-    private boolean isBedBlock(org.bukkit.Location bedLoc, Block block) {
-        if (bedLoc == null)
+    private boolean isBedBlock(Team team, Block block) {
+        if (team == null || block == null)
             return false;
-        return block.getLocation().distance(bedLoc) <= 1.5;
+        org.bukkit.Location bLoc = block.getLocation();
+        for (org.bukkit.Location reg : team.getBedBlockLocations()) {
+            if (reg.getWorld() != null && reg.getWorld().equals(bLoc.getWorld())
+                    && reg.getBlockX() == bLoc.getBlockX()
+                    && reg.getBlockY() == bLoc.getBlockY()
+                    && reg.getBlockZ() == bLoc.getBlockZ()) {
+                return true;
+            }
+        }
+        if (team.getBedLocation() != null) {
+            org.bukkit.Location bedLoc = team.getBedLocation();
+            if (bLoc.getWorld() != null && bLoc.getWorld().equals(bedLoc.getWorld())) {
+                return bLoc.distance(bedLoc) <= 2.2;
+            }
+        }
+        return false;
     }
 
-    private void clearBedBlocks(Block block) {
-        block.setType(Material.AIR);
-        for (org.bukkit.block.BlockFace face : new org.bukkit.block.BlockFace[] {
-                org.bukkit.block.BlockFace.NORTH, org.bukkit.block.BlockFace.SOUTH,
-                org.bukkit.block.BlockFace.EAST, org.bukkit.block.BlockFace.WEST }) {
-            Block adjacent = block.getRelative(face);
-            String adjName = adjacent.getType().name();
-            if (adjName.endsWith("_BED") || adjName.equals("BED_BLOCK")) {
-                adjacent.setType(Material.AIR);
+    private void clearBedBlocks(Team team, Block block) {
+        if (team != null) {
+            for (org.bukkit.Location loc : team.getBedBlockLocations()) {
+                try {
+                    if (loc.getWorld() != null) {
+                        loc.getBlock().setType(Material.AIR);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        if (block != null) {
+            block.setType(Material.AIR);
+            for (org.bukkit.block.BlockFace face : new org.bukkit.block.BlockFace[] {
+                    org.bukkit.block.BlockFace.NORTH, org.bukkit.block.BlockFace.SOUTH,
+                    org.bukkit.block.BlockFace.EAST, org.bukkit.block.BlockFace.WEST }) {
+                Block adjacent = block.getRelative(face);
+                String adjName = adjacent.getType().name();
+                if (adjName.endsWith("_BED") || adjName.equals("BED_BLOCK")) {
+                    adjacent.setType(Material.AIR);
+                }
             }
         }
     }
@@ -645,6 +672,43 @@ public class GameListener implements Listener {
         Player player = event.getPlayer();
         Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
         if (arena != null && arena.getState() == Arena.GameState.IN_GAME) {
+            ItemStack picked = event.getItem().getItemStack();
+            if (arena.isExpMode()) {
+                if (picked.getType() == Material.IRON_INGOT) {
+                    int levels = picked.getAmount();
+                    event.setCancelled(true);
+                    event.getItem().remove();
+                    player.setLevel(player.getLevel() + levels);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.2f);
+                    return;
+                } else if (picked.getType() == Material.GOLD_INGOT) {
+                    int levels = picked.getAmount() * 4;
+                    event.setCancelled(true);
+                    event.getItem().remove();
+                    player.setLevel(player.getLevel() + levels);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7f, 1.3f);
+                    return;
+                } else if (picked.getType() == Material.EXPERIENCE_BOTTLE) {
+                    String expTag = me.horiciastko.bedwars.utils.ItemTagUtils.getTag(picked, "bw_exp_type");
+                    int levels = 5;
+                    if (expTag != null) {
+                        try {
+                            String ptsStr = me.horiciastko.bedwars.utils.ItemTagUtils.getTag(picked, "bw_exp_points");
+                            if (ptsStr != null) {
+                                levels = Integer.parseInt(ptsStr);
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    int totalLevels = levels * picked.getAmount();
+                    event.setCancelled(true);
+                    event.getItem().remove();
+                    player.setLevel(player.getLevel() + totalLevels);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.4f);
+                    return;
+                }
+            }
+
             BedWars.getInstance().getLanguageManager().localizeItem(player.getUniqueId(),
                     event.getItem().getItemStack());
 
@@ -1463,12 +1527,38 @@ public class GameListener implements Listener {
                     }
                 }
 
-                org.bukkit.util.Vector direction = player.getLocation().toVector()
-                        .subtract(edbe.getDamager().getLocation().toVector()).normalize();
+                double horizontalPower = BedWars.getInstance().getConfig().getDouble("game.fireball.horizontal-power", 1.8);
+                double verticalPower = BedWars.getInstance().getConfig().getDouble("game.fireball.vertical-power", 0.55);
 
-                direction.setY(0.5);
-                direction.normalize().multiply(jumpPower);
-                player.setVelocity(player.getVelocity().add(direction));
+                boolean isTnt = edbe.getDamager() instanceof org.bukkit.entity.TNTPrimed;
+                if (isTnt) {
+                    horizontalPower = BedWars.getInstance().getConfig().getDouble("game.tnt.horizontal-power", 2.0);
+                    verticalPower = BedWars.getInstance().getConfig().getDouble("game.tnt.vertical-power", 0.7);
+                }
+
+                org.bukkit.util.Vector diff = player.getLocation().toVector()
+                        .subtract(edbe.getDamager().getLocation().toVector());
+
+                org.bukkit.util.Vector horiz = new org.bukkit.util.Vector(diff.getX(), 0, diff.getZ());
+                if (horiz.lengthSquared() > 0.0001) {
+                    horiz.normalize().multiply(horizontalPower);
+                } else {
+                    horiz = player.getLocation().getDirection().setY(0).normalize().multiply(horizontalPower);
+                }
+
+                org.bukkit.util.Vector currentVel = player.getVelocity();
+                double newY = Math.max(currentVel.getY(), 0) + verticalPower;
+                if (newY > 0.85) {
+                    newY = 0.85;
+                }
+
+                org.bukkit.util.Vector finalVelocity = new org.bukkit.util.Vector(
+                        (currentVel.getX() * 0.4) + horiz.getX(),
+                        newY,
+                        (currentVel.getZ() * 0.4) + horiz.getZ()
+                );
+
+                player.setVelocity(finalVelocity);
             }
         }
 

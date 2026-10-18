@@ -70,12 +70,16 @@ game:
   random-team-assignment: true
   tnt:
     jump-power: 2.5
+    horizontal-power: 2.0
+    vertical-power: 0.7
     damage-enabled: false
     damage-amount: 2.0
     team-damage-amount: 1.0 # Damage dealt to teammates (only when prevent-team-explosion-damage is false)
     timer-enabled: true
   fireball:
     jump-power: 2.0
+    horizontal-power: 1.8 # 水平推力 (远) - 建议 1.5 - 2.2
+    vertical-power: 0.55  # 垂直弹跳 (高) - 建议 0.45 - 0.65，防止直冲云霄
     damage-enabled: true
     damage-amount: 4.0
     team-damage-amount: 2.0 # Damage dealt to teammates (only when prevent-team-explosion-damage is false)
@@ -86,7 +90,7 @@ game:
   
 # Language settings
 # Note: You can change this via /bw admin lang <iso>
-default-language: "en"
+default-language: "zh_CN"
 
 # Standalone Command Shortcuts
 # When enabled, players can use these commands without the /bw prefix.
@@ -149,6 +153,9 @@ groups:
     upgrades-file: "upgrades_hardcore.yml"
   1v1:
     shop-file: "shop.yml" # Re-use default shop
+    upgrades-file: "upgrades.yml"
+  Exp:
+    shop-file: "shop.yml"
     upgrades-file: "upgrades.yml"
 
 # Join GUI Configuration

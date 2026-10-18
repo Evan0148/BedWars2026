@@ -1,0 +1,153 @@
+############################################################
+#                                                          #
+#                 BedWars 团队升级配置                      #
+#                                                          #
+############################################################
+
+npc-name: "&b&l团队升级"
+
+upgrades:
+  sharpness:
+    name: "&c锋利之刃"
+    icon: IRON_SWORD
+    slot: 10
+    max-level: 1
+    tiers:
+      1:
+        cost: 4
+        currency: DIAMOND
+        desc: "&7队伍所有成员的剑类武器"
+        desc2: "&7永久获得 &c锋利 I &7附魔！"
+  protection:
+    name: "&a强化护甲"
+    icon: IRON_CHESTPLATE
+    slot: 11
+    max-level: 4
+    tiers:
+      1:
+        cost: 2
+        currency: DIAMOND
+        desc: "&7队伍所有成员的盔甲"
+        desc2: "&7永久获得 &a保护 I &7附魔！"
+      2:
+        cost: 4
+        currency: DIAMOND
+        desc: "&7队伍所有成员的盔甲"
+        desc2: "&7永久获得 &a保护 II &7附魔！"
+      3:
+        cost: 8
+        currency: DIAMOND
+        desc: "&7队伍所有成员的盔甲"
+        desc2: "&7永久获得 &a保护 III &7附魔！"
+      4:
+        cost: 16
+        currency: DIAMOND
+        desc: "&7队伍所有成员的盔甲"
+        desc2: "&7永久获得 &a保护 IV &7附魔！"
+  haste:
+    name: "&e狂暴矿工"
+    icon: GOLDEN_PICKAXE
+    slot: 12
+    max-level: 2
+    tiers:
+      1:
+        cost: 2
+        currency: DIAMOND
+        desc: "&7队伍所有成员永久获得 &e急迫 I&7！"
+      2:
+        cost: 4
+        currency: DIAMOND
+        desc: "&7队伍所有成员永久获得 &e急迫 II&7！"
+  forge:
+    name: "&d锻造炉"
+    icon: FURNACE
+    slot: 13
+    max-level: 4
+    tiers:
+      1:
+        cost: 2
+        currency: DIAMOND
+        desc: "&7基地 &f铁锭 &7与 &6金锭 &7的刷新速度"
+        desc2: "&7提升 &a50%&7！"
+      2:
+        cost: 4
+        currency: DIAMOND
+        desc: "&7基地 &f铁锭 &7与 &6金锭 &7的刷新速度"
+        desc2: "&7提升 &a100%&7！"
+      3:
+        cost: 6
+        currency: DIAMOND
+        desc: "&7基地锻造炉开始刷新 &2绿宝石&7！"
+      4:
+        cost: 8
+        currency: DIAMOND
+        desc: "&7基地所有资源的刷新速度"
+        desc2: "&7提升 &a200%&7！"
+  heal_pool:
+    name: "&b治愈之池"
+    icon: BEACON
+    slot: 14
+    max-level: 1
+    tiers:
+      1:
+        cost: 1
+        currency: DIAMOND
+        desc: "&7靠近基地时为所有队友"
+        desc2: "&7提供生命恢复效果！"
+  dragon:
+    name: "&6末影龙增援"
+    icon: DRAGON_EGG
+    slot: 15
+    max-level: 1
+    tiers:
+      1:
+        cost: 5
+        currency: DIAMOND
+        desc: "&7在决战时队伍将拥有"
+        desc2: "&62 条末影龙&7（原为 1 条）！"
+  traps:
+    name: "&c陷阱购买"
+    icon: LEATHER
+    slot: 16
+    max-level: 1
+    tiers:
+      1:
+        cost: 1
+        currency: DIAMOND
+        desc: "&7点击为基地配置防御陷阱！"
+
+trap-settings:
+  base-cost: 1
+  increment-cost: 1
+  currency: DIAMOND
+  queue-limit: 3
+
+trap-types:
+  blindness:
+    name: "&c致盲陷阱"
+    icon: TRIPWIRE_HOOK
+    slot: 10
+    desc: "&7使入侵的敌人获得 &8失明 &7和 &8缓慢"
+    desc2: "&7效果，持续 &e8 秒&7。"
+    effect: "BLINDNESS:8:1,SLOW:8:1"
+  counter_offensive:
+    name: "&c反击陷阱"
+    icon: FEATHER
+    slot: 11
+    desc: "&7为基地附近的友军赋予 &a速度 II"
+    desc2: "&7效果，持续 &e15 秒&7。"
+    effect: "SPEED:15:2"
+  alarm:
+    name: "&c警报陷阱"
+    icon: REDSTONE_TORCH
+    slot: 12
+    desc: "&7使进入基地的 &f&l隐身 &7敌人显形"
+    desc2: "&7并向全队发出警报。"
+    effect: "ALARM"
+  miner_fatigue:
+    name: "&c疲劳陷阱"
+    icon: IRON_PICKAXE
+    slot: 13
+    desc: "&7使入侵的敌人获得 &8挖掘疲劳"
+    desc2: "&7效果，持续 &e10 秒&7。"
+    effect: "SLOW_DIGGING:10:1"

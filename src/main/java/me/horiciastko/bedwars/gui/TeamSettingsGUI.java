@@ -16,7 +16,7 @@ public class TeamSettingsGUI extends BaseGUI {
     private final Team team;
 
     public TeamSettingsGUI(Arena arena, Team team) {
-        super("§8" + team.getColor() + "⬛ §8Team: " + team.getColor() + team.getDisplayName(), 3);
+        super("§8" + team.getColor() + "⬛ §8队伍设置: " + team.getColor() + team.getDisplayName(), 3);
         this.arena = arena;
         this.team = team;
     }
@@ -36,58 +36,58 @@ public class TeamSettingsGUI extends BaseGUI {
         }
 
         inventory.setItem(10, new ItemBuilder(Material.ENDER_PEARL)
-                .setName(team.getColor() + "§lSet Team Spawn")
-                .setLore("§7Current: " + formatLocation(team.getSpawnLocation()),
+                .setName(team.getColor() + "§l设置队伍出生点")
+                .setLore("§7当前坐标: " + formatLocation(team.getSpawnLocation()),
                         "",
-                        "§aLeft-click §7to set to your location",
-                        "§cRight-click §7to clear")
+                        "§a左键点击 §7设置为你当前的站立位置",
+                        "§c右键点击 §7清除当前出生点")
                 .build());
 
         inventory.setItem(11, new ItemBuilder(getTeamBed(team.getColor()))
-                .setName(team.getColor() + "§lSet Team Bed")
-                .setLore("§7Current: " + formatLocation(team.getBedLocation()),
+                .setName(team.getColor() + "§l绑定队伍床坐标")
+                .setLore("§7当前坐标: " + formatLocation(team.getBedLocation()),
                         "",
-                        "§eClick §7to auto-detect nearby bed",
-                        "§7(within 10 blocks)")
+                        "§e点击 §7自动搜索周围最近的床方块",
+                        "§7(搜索范围: 10 格内)")
                 .build());
 
         inventory.setItem(12, new ItemBuilder(Material.IRON_BLOCK)
-                .setName(team.getColor() + "§lSet Team Generator")
-                .setLore("§7Generators: §e" + team.getGenerators().size(),
+                .setName(team.getColor() + "§l配置队伍资源生成点")
+                .setLore("§7已设生成点: §e" + team.getGenerators().size() + " 个",
                         "",
-                        "§aLeft-click §7to add generator here",
-                        "§cRight-click §7to clear all generators")
+                        "§a左键点击 §7在此处添加一个基地生成点",
+                        "§c右键点击 §7清空该队伍的所有生成点")
                 .build());
 
         inventory.setItem(14, new ItemBuilder(Material.VILLAGER_SPAWN_EGG)
-                .setName("§a§lSet Shop NPC")
-                .setLore("§7Current: " + formatLocation(team.getShopLocation()),
+                .setName("§a§l设置道具商店 NPC")
+                .setLore("§7当前坐标: " + formatLocation(team.getShopLocation()),
                         "",
-                        "§aLeft-click §7to set to your location",
-                        "§cRight-click §7to clear")
+                        "§a左键点击 §7设置为你当前的站立位置",
+                        "§c右键点击 §7清除当前商店 NPC")
                 .build());
 
         inventory.setItem(15, new ItemBuilder(Material.EXPERIENCE_BOTTLE)
-                .setName("§b§lSet Upgrade NPC")
-                .setLore("§7Current: " + formatLocation(team.getUpgradeLocation()),
+                .setName("§b§l设置团队升级 NPC")
+                .setLore("§7当前坐标: " + formatLocation(team.getUpgradeLocation()),
                         "",
-                        "§aLeft-click §7to set to your location",
-                        "§cRight-click §7to clear")
+                        "§a左键点击 §7设置为你当前的站立位置",
+                        "§c右键点击 §7清除当前升级 NPC")
                 .build());
 
         inventory.setItem(16, new ItemBuilder(team.getMaterial())
-                .setName(team.getColor() + "§lTeam Info")
-                .setLore("§7Color: " + team.getColor() + team.getColor().name(),
-                        "§7Spawn: " + (team.getSpawnLocation() != null ? "§aSet" : "§cNot set"),
-                        "§7Bed: " + (team.getBedLocation() != null ? "§aSet" : "§cNot set"),
-                        "§7Shop: " + (team.getShopLocation() != null ? "§aSet" : "§cNot set"),
-                        "§7Upgrade: " + (team.getUpgradeLocation() != null ? "§aSet" : "§cNot set"),
-                        "§7Generators: §e" + team.getGenerators().size())
+                .setName(team.getColor() + "§l队伍信息概览")
+                .setLore("§7队伍颜色: " + team.getColor() + team.getColor().name(),
+                        "§7出生点: " + (team.getSpawnLocation() != null ? "§a已设置" : "§c未设置"),
+                        "§7床坐标: " + (team.getBedLocation() != null ? "§a已设置" : "§c未设置"),
+                        "§7道具商店: " + (team.getShopLocation() != null ? "§a已设置" : "§c未设置"),
+                        "§7团队升级: " + (team.getUpgradeLocation() != null ? "§a已设置" : "§c未设置"),
+                        "§7基地生成点数: §e" + team.getGenerators().size())
                 .build());
 
         inventory.setItem(22, new ItemBuilder(Material.BARRIER)
-                .setName("§c§lBack to Teams")
-                .setLore("§7Return to team list")
+                .setName("§c§l返回队伍列表")
+                .setLore("§7返回队伍管理界面")
                 .build());
 
         for (int i = 9; i < 18; i++) {
@@ -99,8 +99,8 @@ public class TeamSettingsGUI extends BaseGUI {
 
     private String formatLocation(org.bukkit.Location loc) {
         if (loc == null)
-            return "§cNot Set";
-        return String.format("§e%.0f, %.0f, %.0f", loc.getX(), loc.getY(), loc.getZ());
+            return "§c未设置";
+        return String.format("§a%.0f, %.0f, %.0f", loc.getX(), loc.getY(), loc.getZ());
     }
 
     private Material getTeamGlass(org.bukkit.ChatColor color) {

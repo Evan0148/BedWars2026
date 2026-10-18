@@ -24,12 +24,12 @@ public class ManualShopSelectorGUI extends BaseGUI {
             if (i >= slots.length)
                 break;
             ItemStack teamItem = new ItemBuilder(team.getMaterial())
-                    .setName(team.getColor() + "§l" + team.getName())
+                    .setName(team.getColor() + "§l" + team.getDisplayName())
                     .setLore(
-                            "§7Select this team to set NPC position.",
+                            "§7选择此队伍并配置其 NPC 生成点。",
                             "",
-                            "§eLeft-click to set §aSHOP §eNPC",
-                            "§bRight-click to set §bUPGRADE §eNPC")
+                            "§e左键点击 将当前位置设为 §a道具商店 §eNPC",
+                            "§b右键点击 将当前位置设为 §b团队升级 §eNPC")
                     .build();
 
             if (teamItem.getItemMeta() != null) {
@@ -39,7 +39,7 @@ public class ManualShopSelectorGUI extends BaseGUI {
         }
 
         inventory.setItem(22, new ItemBuilder(org.bukkit.Material.ARROW)
-                .setName("§7Back")
+                .setName("§7返回上一级")
                 .build());
     }
 

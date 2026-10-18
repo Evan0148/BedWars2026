@@ -331,7 +331,7 @@ public class GeneratorTask extends BukkitRunnable {
 
                     if (currentCd >= Math.max(1, maxTicks)) {
                         currentCd = 0;
-                        spawnItem(team.getGenerators(), mat, limit);
+                        spawnItem(arena, team.getGenerators(), mat, limit);
                     }
                     team.getResourceCooldowns().put(mat.name(), currentCd);
                 }
@@ -389,7 +389,7 @@ public class GeneratorTask extends BukkitRunnable {
         arena.setDiamondCooldown(arena.getDiamondCooldown() + 1);
         if (arena.getDiamondCooldown() >= dDelay) {
             arena.setDiamondCooldown(0);
-            spawnItem(arena.getDiamondGenerators(), dMat, dLimit);
+            spawnItem(arena, arena.getDiamondGenerators(), dMat, dLimit);
         }
 
         int eTier = arena.getEmeraldTier();
@@ -408,7 +408,7 @@ public class GeneratorTask extends BukkitRunnable {
         arena.setEmeraldCooldown(arena.getEmeraldCooldown() + 1);
         if (arena.getEmeraldCooldown() >= eDelay) {
             arena.setEmeraldCooldown(0);
-            spawnItem(arena.getEmeraldGenerators(), eMat, eLimit);
+            spawnItem(arena, arena.getEmeraldGenerators(), eMat, eLimit);
         }
     }
 
@@ -515,8 +515,23 @@ public class GeneratorTask extends BukkitRunnable {
                 .ifPresent(s -> s.setCustomName(fullName));
     }
 
-    private void spawnItem(java.util.List<Location> locations, Material material, int limit) {
+    private void spawnItem(Arena arena, java.util.List<Location> locations, Material material, int limit) {
         java.util.Set<Location> uniqueLocations = new java.util.HashSet<>();
+        boolean isExpMode = (arena != null && arena.isExpMode());
+        Material actualMaterial = material;
+        String expTypeTag = null;
+        int expPoints = 0;
+        String customName = null;
+
+        if (isExpMode) {
+            if (material == Material.EMERALD) {
+                actualMaterial = Material.EXPERIENCE_BOTTLE;
+                expTypeTag = "bw_exp_emerald";
+                expPoints = 5; // 代表5级经验
+                customName = "§b高级经验瓶 §7(+5 级经验)";
+            }
+        }
+
         for (Location loc : locations) {
             if (loc == null || loc.getWorld() == null)
                 continue;
@@ -533,13 +548,14 @@ public class GeneratorTask extends BukkitRunnable {
                 loc.getWorld().loadChunk(chunkX, chunkZ);
             }
 
+            final Material checkMat = actualMaterial;
             if (limit > 0) {
                 if (loc.getWorld().getNearbyEntities(blockLoc.clone().add(0.5, 1.5, 0.5), 1.5, 4.0, 1.5).stream()
                         .filter(e -> {
                             if (!(e instanceof org.bukkit.entity.Item))
                                 return false;
                             org.bukkit.entity.Item i = (org.bukkit.entity.Item) e;
-                            return i.getItemStack().getType() == material;
+                            return i.getItemStack().getType() == checkMat;
                         })
                         .map(e -> (org.bukkit.entity.Item) e)
                         .mapToInt(i -> i.getItemStack().getAmount())
@@ -548,11 +564,19 @@ public class GeneratorTask extends BukkitRunnable {
                 }
             }
 
-            ItemStack stack = new ItemStack(material);
+            ItemStack stack = new ItemStack(actualMaterial);
             org.bukkit.inventory.meta.ItemMeta meta = stack.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(plugin.getLanguageManager().getItemName(null, material));
+                if (customName != null) {
+                    meta.setDisplayName(customName);
+                } else {
+                    meta.setDisplayName(plugin.getLanguageManager().getItemName(null, actualMaterial));
+                }
                 stack.setItemMeta(meta);
+            }
+            if (expTypeTag != null) {
+                me.horiciastko.bedwars.utils.ItemTagUtils.setTag(stack, "bw_exp_type", expTypeTag);
+                me.horiciastko.bedwars.utils.ItemTagUtils.setTag(stack, "bw_exp_points", String.valueOf(expPoints));
             }
             loc.getWorld().dropItem(blockLoc.clone().add(0.5, 2.0, 0.5), stack)
                     .setVelocity(new Vector(0, 0, 0));

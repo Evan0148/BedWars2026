@@ -1,0 +1,39 @@
+# BedWars 队伍配置
+# 内部名称：数据库和代码识别的唯一标识符（例如 Red）
+# display_name：向玩家展示的队伍中文名（例如 红队）
+# color：Bukkit ChatColor 名称（例如 RED, BLUE, GOLD 等）
+# material：羊毛材质（例如 RED_WOOL, LIGHT_BLUE_WOOL）
+
+teams:
+  Red:
+    display_name: "红队"
+    color: RED
+    material: RED_WOOL
+  Blue:
+    display_name: "蓝队"
+    color: BLUE
+    material: BLUE_WOOL
+  Green:
+    display_name: "绿队"
+    color: GREEN
+    material: LIME_WOOL
+  Yellow:
+    display_name: "黄队"
+    color: YELLOW
+    material: YELLOW_WOOL
+  Aqua:
+    display_name: "青队"
+    color: AQUA
+    material: CYAN_WOOL
+  White:
+    display_name: "白队"
+    color: WHITE
+    material: WHITE_WOOL
+  Pink:
+    display_name: "粉队"
+    color: LIGHT_PURPLE
+    material: PINK_WOOL
+  Gray:
+    display_name: "灰队"
+    color: DARK_GRAY
+    material: GRAY_WOOL

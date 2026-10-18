@@ -15,7 +15,7 @@ public class TeamColorSelectorGUI extends BaseGUI {
     private final Arena arena;
 
     public TeamColorSelectorGUI(Arena arena) {
-        super("§8Select Team Color", 3);
+        super("§8选择队伍颜色", 3);
         this.arena = arena;
     }
 
@@ -36,13 +36,13 @@ public class TeamColorSelectorGUI extends BaseGUI {
 
             inventory.setItem(slot++, new ItemBuilder(wool)
                     .setName(color + color.name())
-                    .setLore("§eClick to create team")
+                    .setLore("§e点击创建该颜色队伍")
                     .build());
             if (slot >= inventory.getSize())
                 break;
         }
 
-        inventory.setItem(26, new ItemBuilder(Material.ARROW).setName("§cBack").build());
+        inventory.setItem(26, new ItemBuilder(Material.ARROW).setName("§c返回上一级").build());
     }
 
     private Material getWoolFromColor(ChatColor color) {
@@ -56,7 +56,7 @@ public class TeamColorSelectorGUI extends BaseGUI {
             return;
         String name = item.getItemMeta().getDisplayName();
 
-        if (name.equals("§cBack")) {
+        if (name.equals("§c返回上一级") || name.equals("§cBack")) {
             new TeamListGUI(arena).open(player);
             return;
         }

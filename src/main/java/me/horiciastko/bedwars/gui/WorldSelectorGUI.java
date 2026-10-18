@@ -25,7 +25,7 @@ public class WorldSelectorGUI extends BaseGUI {
     private final List<String> worldNames;
 
     public WorldSelectorGUI(Arena arena) {
-        super("§8Set World: §1" + arena.getName(), 6);
+        super("§8设置房间所属世界: §1" + arena.getName(), 6);
         this.arena = arena;
         this.worldNames = findWorlds();
     }
@@ -57,10 +57,10 @@ public class WorldSelectorGUI extends BaseGUI {
 
             World world = Bukkit.getWorld(name);
             com.cryptomorin.xseries.XMaterial material = com.cryptomorin.xseries.XMaterial.GRASS_BLOCK;
-            String status = "§cNot Loaded";
+            String status = "§c未加载";
 
             if (world != null) {
-                status = "§aLoaded";
+                status = "§a已加载";
                 if (world.getEnvironment() == World.Environment.NETHER)
                     material = com.cryptomorin.xseries.XMaterial.NETHERRACK;
                 else if (world.getEnvironment() == World.Environment.THE_END)
@@ -70,9 +70,9 @@ public class WorldSelectorGUI extends BaseGUI {
             ItemStack worldItem = new ItemBuilder(material)
                     .setName("§a" + name)
                     .setLore(
-                            "§7Status: " + status,
-                            "§7Click to set this world for arena.",
-                            "§7Current: §e" + (arena.getWorldName() != null ? arena.getWorldName() : "None"))
+                            "§7加载状态: " + status,
+                            "§7点击将该世界绑定为此房间地图",
+                            "§7当前设定: §e" + (arena.getWorldName() != null ? arena.getWorldName() : "无"))
                     .build();
 
             org.bukkit.inventory.meta.ItemMeta meta = worldItem.getItemMeta();

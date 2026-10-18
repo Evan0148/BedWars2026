@@ -36,7 +36,7 @@ public class LanguageManager {
             langDir.mkdirs();
         }
 
-        String[] bundledLanguages = { "en", "pl" };
+        String[] bundledLanguages = { "en", "pl", "zh_CN" };
         for (String iso : bundledLanguages) {
             File dir = new File(langDir, iso);
             if (!dir.exists()) {

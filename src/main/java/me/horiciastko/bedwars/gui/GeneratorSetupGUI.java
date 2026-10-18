@@ -15,13 +15,13 @@ public class GeneratorSetupGUI extends BaseGUI {
     private final Team team;
 
     public GeneratorSetupGUI(Arena arena) {
-        super("§8Global Generators", 3);
+        super("§8全局生成点设置", 3);
         this.arena = arena;
         this.team = null;
     }
 
     public GeneratorSetupGUI(Arena arena, Team team) {
-        super("§8Team Generators: " + team.getName(), 3);
+        super("§8队伍生成点设置: " + team.getName(), 3);
         this.arena = arena;
         this.team = team;
     }
@@ -30,41 +30,41 @@ public class GeneratorSetupGUI extends BaseGUI {
     public void setContents(Player player) {
         if (team == null) {
             inventory.setItem(11, new ItemBuilder(Material.DIAMOND)
-                    .setName("§aAdd Diamond Generator")
-                    .setLore("§7Current Count: " + arena.getDiamondGenerators().size(), "",
-                            "§eClick to add at your location")
+                    .setName("§a添加钻石生成点")
+                    .setLore("§7当前数量: " + arena.getDiamondGenerators().size(), "",
+                            "§e点击在你所在位置添加")
                     .build());
 
             inventory.setItem(15, new ItemBuilder(Material.EMERALD)
-                    .setName("§aAdd Emerald Generator")
-                    .setLore("§7Current Count: " + arena.getEmeraldGenerators().size(), "",
-                            "§eClick to add at your location")
+                    .setName("§a添加绿宝石生成点")
+                    .setLore("§7当前数量: " + arena.getEmeraldGenerators().size(), "",
+                            "§e点击在你所在位置添加")
                     .build());
 
             inventory.setItem(22, new ItemBuilder(Material.BARRIER)
-                    .setName("§cClear All Global Generators")
-                    .setLore("§7Removes ALL Diamond and Emerald generators")
+                    .setName("§c清空所有全局生成点")
+                    .setLore("§7移除当前房间所有的钻石与绿宝石刷新点")
                     .build());
 
-            inventory.setItem(26, new ItemBuilder(Material.ARROW).setName("§cBack").build());
+            inventory.setItem(26, new ItemBuilder(Material.ARROW).setName("§c返回上一级").build());
 
         } else {
             inventory.setItem(11, new ItemBuilder(Material.IRON_INGOT)
-                    .setName("§aAdd Iron Generator")
-                    .setLore("§7Click to add at your location", "§7(Usually same block as Gold)")
+                    .setName("§a添加铁锭生成点")
+                    .setLore("§7点击在你所在位置添加", "§7(通常与金锭设在同一方块)")
                     .build());
 
             inventory.setItem(15, new ItemBuilder(Material.GOLD_INGOT)
-                    .setName("§aAdd Gold Generator")
-                    .setLore("§7Click to add at your location")
+                    .setName("§a添加金锭生成点")
+                    .setLore("§7点击在你所在位置添加")
                     .build());
 
             inventory.setItem(22, new ItemBuilder(Material.BARRIER)
-                    .setName("§cClear Team Generators")
-                    .setLore("§7Removes ALL generators for this team")
+                    .setName("§c清空队伍生成点")
+                    .setLore("§7移除该队伍的所有资源刷新点")
                     .build());
 
-            inventory.setItem(26, new ItemBuilder(Material.ARROW).setName("§cBack").build());
+            inventory.setItem(26, new ItemBuilder(Material.ARROW).setName("§c返回上一级").build());
         }
 
         ItemStack glass = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(" ").build();
@@ -81,7 +81,7 @@ public class GeneratorSetupGUI extends BaseGUI {
             return;
         String name = item.getItemMeta().getDisplayName();
 
-        if (name.equals("§cBack")) {
+        if (name.equals("§c返回上一级") || name.equals("§cBack")) {
             if (team == null)
                 new ArenaSettingsGUI(arena).open(player);
             else
@@ -90,33 +90,30 @@ public class GeneratorSetupGUI extends BaseGUI {
         }
 
         if (team == null) {
-            if (name.contains("Add Diamond Generator")) {
+            if (name.contains("添加钻石生成点") || name.contains("Add Diamond Generator")) {
                 arena.getDiamondGenerators().add(player.getLocation());
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "generator-diamond-added-gui"));
                 setContents(player);
-            } else if (name.contains("Add Emerald Generator")) {
+            } else if (name.contains("添加绿宝石生成点") || name.contains("Add Emerald Generator")) {
                 arena.getEmeraldGenerators().add(player.getLocation());
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "generator-emerald-added-gui"));
                 setContents(player);
-            } else if (name.contains("Clear All")) {
+            } else if (name.contains("清空所有全局生成点") || name.contains("Clear All")) {
                 arena.getDiamondGenerators().clear();
                 arena.getEmeraldGenerators().clear();
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "generator-global-cleared"));
                 setContents(player);
             }
         } else {
-            if (name.contains("Add Iron Generator")) {
-                team.getGenerators().add(player.getLocation());
-
+            if (name.contains("添加铁锭生成点") || name.contains("Add Iron Generator")) {
                 team.getGenerators().add(player.getLocation());
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "generator-team-added-iron"));
                 setContents(player);
-
-            } else if (name.contains("Add Gold Generator")) {
+            } else if (name.contains("添加金锭生成点") || name.contains("Add Gold Generator")) {
                 team.getGenerators().add(player.getLocation());
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "generator-team-added-gold"));
                 setContents(player);
-            } else if (name.contains("Clear Team")) {
+            } else if (name.contains("清空队伍生成点") || name.contains("Clear Team")) {
                 team.getGenerators().clear();
                 player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "generator-team-cleared"));
                 setContents(player);

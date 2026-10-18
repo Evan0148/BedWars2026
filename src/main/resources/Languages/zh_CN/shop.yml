@@ -1,0 +1,557 @@
+############################################################
+#                                                          #
+#                    BedWars 道具商店                      #
+#                                                          #
+############################################################
+
+shop-title: "&8道具商店"
+
+categories:
+  quick_buy:
+    name: "&a快捷购买"
+    slot: 0
+    icon: NETHER_STAR
+  blocks:
+    name: "&a方块"
+    slot: 1
+    icon: TERRACOTTA
+  melee:
+    name: "&a近战武器"
+    slot: 2
+    icon: GOLDEN_SWORD
+  armor:
+    name: "&a盔甲防具"
+    slot: 3
+    icon: CHAINMAIL_BOOTS
+  tools:
+    name: "&a工具"
+    slot: 4
+    icon: STONE_PICKAXE
+  ranged:
+    name: "&a远程武器"
+    slot: 5
+    icon: BOW
+  potions:
+    name: "&a药水"
+    slot: 6
+    icon: BREWING_STAND
+  utility:
+    name: "&a实用道具"
+    slot: 7
+    icon: TNT
+
+sections:
+  quick_buy:
+    items:
+      wool:
+        material: WHITE_WOOL
+        name: "&f羊毛"
+        amount: 16
+        cost: 4
+        currency: IRON_INGOT
+        slot: 19
+        lore:
+          - "&7搭路与快速防御基地的"
+          - "&7必备基础方块。"
+      stone_sword:
+        material: STONE_SWORD
+        name: "&f石剑"
+        amount: 1
+        cost: 10
+        currency: IRON_INGOT
+        slot: 20
+        lore:
+          - "&7前期可靠的近战武器。"
+      chainmail:
+        material: CHAINMAIL_BOOTS
+        name: "&f永久锁链甲"
+        amount: 1
+        cost: 40
+        currency: IRON_INGOT
+        slot: 21
+        lore:
+          - "&7提供更强的防御保护，"
+          - "&7死亡后保留直至本局结束。"
+      gapple:
+        material: GOLDEN_APPLE
+        name: "&e金苹果"
+        amount: 1
+        cost: 3
+        currency: GOLD_INGOT
+        slot: 22
+        lore:
+          - "&7战斗中快速恢复生命值与"
+          - "&7紧急保命的神器。"
+      bow:
+        material: BOW
+        name: "&f普通弓"
+        amount: 1
+        cost: 12
+        currency: GOLD_INGOT
+        slot: 23
+        lore:
+          - "&7让敌人保持在安全距离之外。"
+      speed:
+        material: POTION
+        potion_type: SPEED
+        name: "&f速度 II (45秒)"
+        amount: 1
+        cost: 1
+        currency: EMERALD
+        slot: 24
+        lore:
+          - "&7获得极高的移动速度，"
+          - "&7在走位与突袭中抢占先机。"
+      tnt:
+        material: TNT
+        name: "&cTNT"
+        amount: 1
+        cost: 4
+        currency: GOLD_INGOT
+        slot: 25
+        lore:
+          - "&7破开敌方防御工程的终极利器。"
+      wood:
+        material: OAK_PLANKS
+        name: "&f橡木木板"
+        amount: 16
+        cost: 4
+        currency: GOLD_INGOT
+        slot: 28
+        lore:
+          - "&7坚固的建筑材料，"
+          - "&7可有效抵御火球冲击。"
+      iron_sword:
+        material: IRON_SWORD
+        name: "&f铁剑"
+        amount: 1
+        cost: 7
+        currency: GOLD_INGOT
+        slot: 29
+        lore:
+          - "&7提供更高额的近战伤害。"
+      iron_armor:
+        material: IRON_BOOTS
+        name: "&f永久铁甲"
+        amount: 1
+        cost: 12
+        currency: GOLD_INGOT
+        slot: 30
+        lore:
+          - "&7厚重的护甲防御，"
+          - "&7死亡后保留直至本局结束。"
+      shears:
+        material: SHEARS
+        name: "&f永久剪刀"
+        amount: 1
+        cost: 20
+        currency: IRON_INGOT
+        slot: 31
+        lore:
+          - "&7迅速剪断敌人的羊毛防线。"
+      arrows:
+        material: ARROW
+        name: "&f箭矢"
+        amount: 8
+        cost: 2
+        currency: GOLD_INGOT
+        slot: 32
+        lore:
+          - "&7弓箭弹药。"
+      jump:
+        material: POTION
+        potion_type: JUMP
+        name: "&f跳跃提升 V (45秒)"
+        amount: 1
+        cost: 1
+        currency: EMERALD
+        slot: 33
+        lore:
+          - "&7轻松跃过墙壁与防御障碍。"
+      water_bucket:
+        material: WATER_BUCKET
+        name: "&b水桶"
+        amount: 1
+        cost: 3
+        currency: GOLD_INGOT
+        slot: 34
+        lore:
+          - "&7减缓敌人速度并免疫摔落伤害。"
+
+  blocks:
+    items:
+      wool:
+        material: WHITE_WOOL
+        name: "&f羊毛"
+        amount: 16
+        cost: 4
+        currency: IRON_INGOT
+        slot: 19
+        lore:
+          - "&7基础建筑方块。"
+      clay:
+        material: TERRACOTTA
+        name: "&f硬化粘土"
+        amount: 16
+        cost: 12
+        currency: IRON_INGOT
+        slot: 20
+        lore:
+          - "&7抵御敌人突袭的坚实防线。"
+      glass:
+        material: GLASS
+        name: "&f防爆玻璃"
+        amount: 4
+        cost: 12
+        currency: IRON_INGOT
+        slot: 21
+        lore:
+          - "&7完全免疫 TNT 爆炸！"
+      end_stone:
+        material: END_STONE
+        name: "&f末地石"
+        amount: 16
+        cost: 24
+        currency: IRON_INGOT
+        slot: 22
+        lore:
+          - "&7极难在没有对应工具时被破坏。"
+      ladders:
+        material: LADDER
+        name: "&f梯子"
+        amount: 16
+        cost: 4
+        currency: IRON_INGOT
+        slot: 23
+        lore:
+          - "&7垂直攀爬工具。"
+      wood:
+        material: OAK_PLANKS
+        name: "&f橡木木板"
+        amount: 16
+        cost: 4
+        currency: GOLD_INGOT
+        slot: 24
+        lore:
+          - "&7优质的高抗火防具方块。"
+      obsidian:
+        material: OBSIDIAN
+        name: "&f黑曜石"
+        amount: 4
+        cost: 4
+        currency: EMERALD
+        slot: 25
+        lore:
+          - "&7终极防御方块，"
+          - "&7必须使用钻石镐才能破坏。"
+  
+  melee:
+    items:
+      stone_sword:
+        material: STONE_SWORD
+        name: "&f石剑"
+        amount: 1
+        cost: 10
+        currency: IRON_INGOT
+        slot: 19
+        lore:
+          - "&7足够应对前期突袭。"
+      iron_sword:
+        material: IRON_SWORD
+        name: "&f铁剑"
+        amount: 1
+        cost: 7
+        currency: GOLD_INGOT
+        slot: 20
+        lore:
+          - "&7显著提升攻击力。"
+      diamond_sword:
+        material: DIAMOND_SWORD
+        name: "&b钻石剑"
+        amount: 1
+        cost: 4
+        currency: EMERALD
+        slot: 21
+        lore:
+          - "&7近战威力的巅峰象征。"
+      kb_stick:
+        material: STICK
+        name: "&f击退棒"
+        amount: 1
+        cost: 10
+        currency: GOLD_INGOT
+        slot: 22
+        lore:
+          - "&7将敌人狠狠击落虚空。"
+
+  armor:
+    items:
+      chainmail:
+        material: CHAINMAIL_BOOTS
+        name: "&f永久锁链甲"
+        amount: 1
+        cost: 40
+        currency: IRON_INGOT
+        slot: 19
+        lore:
+          - "&7强化基础护甲值。"
+      iron:
+        material: IRON_BOOTS
+        name: "&f永久铁甲"
+        amount: 1
+        cost: 12
+        currency: GOLD_INGOT
+        slot: 20
+        lore:
+          - "&7高额减伤抗击打。"
+      diamond:
+        material: DIAMOND_BOOTS
+        name: "&b永久钻石甲"
+        amount: 1
+        cost: 6
+        currency: EMERALD
+        slot: 21
+        lore:
+          - "&7无坚不摧的顶级守护防具。"
+
+  tools:
+    items:
+      shears:
+        material: SHEARS
+        name: "&f永久剪刀"
+        amount: 1
+        cost: 20
+        currency: IRON_INGOT
+        slot: 19
+        lore:
+          - "&7极速剪断羊毛桥梁。"
+      pickaxe:
+        name: "&f镐 (等级 %tier%)"
+        slot: 20
+        tiers:
+          1:
+            material: WOODEN_PICKAXE
+            name: "&f木镐"
+            cost: 10
+            currency: IRON_INGOT
+            enchantments:
+              DIG_SPEED: 1
+            lore:
+              - "&7效率 I"
+          2:
+            material: STONE_PICKAXE
+            name: "&f石镐"
+            cost: 10
+            currency: IRON_INGOT
+            enchantments:
+              DIG_SPEED: 1
+            lore:
+              - "&7效率 I"
+          3:
+            material: IRON_PICKAXE
+            name: "&f铁镐"
+            cost: 3
+            currency: GOLD_INGOT
+            enchantments:
+              DIG_SPEED: 2
+            lore:
+              - "&7效率 II"
+          4:
+            material: DIAMOND_PICKAXE
+            name: "&b钻石镐"
+            cost: 6
+            currency: GOLD_INGOT
+            enchantments:
+              DIG_SPEED: 3
+            lore:
+              - "&7效率 III"
+      axe:
+        name: "&f斧 (等级 %tier%)"
+        slot: 21
+        tiers:
+          1:
+            material: WOODEN_AXE
+            name: "&f木斧"
+            cost: 10
+            currency: IRON_INGOT
+            enchantments:
+              DIG_SPEED: 1
+            lore:
+              - "&7效率 I"
+          2:
+            material: STONE_AXE
+            name: "&f石斧"
+            cost: 10
+            currency: IRON_INGOT
+            enchantments:
+              DIG_SPEED: 1
+            lore:
+              - "&7效率 I"
+          3:
+            material: IRON_AXE
+            name: "&f铁斧"
+            cost: 3
+            currency: GOLD_INGOT
+            enchantments:
+              DIG_SPEED: 2
+            lore:
+              - "&7效率 II"
+          4:
+            material: DIAMOND_AXE
+            name: "&b钻石斧"
+            cost: 6
+            currency: GOLD_INGOT
+            enchantments:
+              DIG_SPEED: 3
+            lore:
+              - "&7效率 III"
+
+  ranged:
+    items:
+      arrows:
+        material: ARROW
+        name: "&f箭矢"
+        amount: 8
+        cost: 2
+        currency: GOLD_INGOT
+        slot: 19
+      bow:
+        material: BOW
+        name: "&f普通弓"
+        amount: 1
+        cost: 12
+        currency: GOLD_INGOT
+        slot: 20
+      power_bow:
+        material: BOW
+        name: "&b力量弓 (力量 I)"
+        amount: 1
+        cost: 24
+        currency: GOLD_INGOT
+        slot: 21
+        enchantments:
+          ARROW_DAMAGE: 1
+      punch_bow:
+        material: BOW
+        name: "&5冲击弓 (力量 I, 冲击 I)"
+        amount: 1
+        cost: 6
+        currency: EMERALD
+        slot: 22
+        enchantments:
+          ARROW_DAMAGE: 1
+          ARROW_KNOCKBACK: 1
+
+  potions:
+    items:
+      speed:
+        material: POTION
+        potion_type: SPEED
+        shop_name: "&f速度 II (45秒)"
+        inventory_name: "&f速度 II 药水"
+        amount: 1
+        cost: 1
+        currency: EMERALD
+        slot: 19
+      jump:
+        material: POTION
+        potion_type: JUMP
+        shop_name: "&f跳跃提升 V (45秒)"
+        inventory_name: "&f跳跃提升 V 药水"
+        amount: 1
+        cost: 1
+        currency: EMERALD
+        slot: 20
+      invisibility:
+        material: POTION
+        potion_type: INVISIBILITY
+        shop_name: "&f隐身 (30秒)"
+        inventory_name: "&f隐身药水"
+        amount: 1
+        cost: 2
+        currency: EMERALD
+        slot: 21
+
+  utility:
+    items:
+      gapple:
+        material: GOLDEN_APPLE
+        name: "&e金苹果"
+        amount: 1
+        cost: 3
+        currency: GOLD_INGOT
+        slot: 19
+      bedbug:
+        material: SNOWBALL
+        name: "&c床虱刷怪蛋"
+        amount: 1
+        cost: 40
+        currency: IRON_INGOT
+        slot: 20
+      dream_defender:
+        material: POLAR_BEAR_SPAWN_EGG
+        name: "&b铁傀儡保卫者"
+        amount: 1
+        cost: 120
+        currency: IRON_INGOT
+        slot: 21
+      fireball:
+        material: FIRE_CHARGE
+        name: "&6火球"
+        amount: 1
+        cost: 40
+        currency: IRON_INGOT
+        slot: 22
+      tnt:
+        material: TNT
+        name: "&cTNT"
+        amount: 1
+        cost: 4
+        currency: GOLD_INGOT
+        slot: 23
+      ender_pearl:
+        material: ENDER_PEARL
+        name: "&5末影珍珠"
+        amount: 1
+        cost: 4
+        currency: EMERALD
+        slot: 24
+      tracker:
+        material: COMPASS
+        name: "&f追击指南针"
+        amount: 1
+        cost: 2
+        currency: EMERALD
+        slot: 25
+        lore:
+          - "&7右键点击可追踪"
+          - "&7距离最近的敌对玩家！"
+      bridge_egg:
+        material: EGG
+        name: "&f搭路蛋"
+        amount: 1
+        cost: 3
+        currency: EMERALD
+        slot: 28
+      milk:
+        material: MILK_BUCKET
+        name: "&f魔法牛奶"
+        amount: 1
+        cost: 4
+        currency: GOLD_INGOT
+        slot: 29
+      sponge:
+        material: SPONGE
+        shop_name: "&e海绵 (x4)"
+        inventory_name: "&e海绵"
+        amount: 4
+        cost: 3
+        currency: GOLD_INGOT
+        slot: 30
+      tower:
+        material: CHEST
+        name: "&f即时防御塔"
+        amount: 1
+        cost: 24
+        currency: IRON_INGOT
+        slot: 31

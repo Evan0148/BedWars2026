@@ -18,7 +18,7 @@ public class TeamManagementGUI extends BaseGUI {
     private final Arena arena;
 
     public TeamManagementGUI(Arena arena) {
-        super("§8§l⚔ §9Teams: §f" + arena.getName(), 4);
+        super("§8§l⚔ §9队伍列表: §f" + arena.getName(), 4);
         this.arena = arena;
     }
 
@@ -50,18 +50,18 @@ public class TeamManagementGUI extends BaseGUI {
 
             List<String> lore = new ArrayList<>();
             lore.add("§8━━━━━━━━━━━━━━━━━━━━━━━");
-            lore.add("§7Color: " + team.getColor() + team.getColor().name());
+            lore.add("§7颜色代号: " + team.getColor() + team.getColor().name());
             lore.add("");
-            lore.add((spawnSet ? "§a✓" : "§c✗") + " §7Spawn: " + (spawnSet ? "§aSet" : "§cNot set"));
-            lore.add((bedSet ? "§a✓" : "§c✗") + " §7Bed: " + (bedSet ? "§aSet" : "§cNot set"));
-            lore.add((shopSet ? "§a✓" : "§c✗") + " §7Shop NPC: " + (shopSet ? "§aSet" : "§cNot set"));
-            lore.add((upgradeSet ? "§a✓" : "§c✗") + " §7Upgrade NPC: " + (upgradeSet ? "§aSet" : "§cNot set"));
-            lore.add("§7Generators: §e" + team.getGenerators().size());
+            lore.add((spawnSet ? "§a✓" : "§c✗") + " §7出生点: " + (spawnSet ? "§a已设置" : "§c未设置"));
+            lore.add((bedSet ? "§a✓" : "§c✗") + " §7床坐标: " + (bedSet ? "§a已设置" : "§c未设置"));
+            lore.add((shopSet ? "§a✓" : "§c✗") + " §7道具商店 NPC: " + (shopSet ? "§a已设置" : "§c未设置"));
+            lore.add((upgradeSet ? "§a✓" : "§c✗") + " §7团队升级 NPC: " + (upgradeSet ? "§a已设置" : "§c未设置"));
+            lore.add("§7基地生成点数量: §e" + team.getGenerators().size());
             lore.add("");
-            lore.add(ready ? "§a✓ Team is ready!" : "§c✗ Set spawn & bed!");
+            lore.add(ready ? "§a✓ 队伍已就绪！" : "§c✗ 请设置出生点与床！");
             lore.add("");
-            lore.add("§e▸ Left-click to edit");
-            lore.add("§c▸ Right-click to remove");
+            lore.add("§e▸ 左键点击详细配置");
+            lore.add("§c▸ 右键点击删除此队伍");
             lore.add("§8━━━━━━━━━━━━━━━━━━━━━━━");
 
             inventory.setItem(slot++, new ItemBuilder(teamMat)
@@ -79,21 +79,21 @@ public class TeamManagementGUI extends BaseGUI {
         }
 
         inventory.setItem(31, new ItemBuilder(Material.NETHER_STAR)
-                .setName("§a§l➕ §fAdd New Team")
-                .setLore("§7Click to add a new team",
-                        "§7from available colors")
+                .setName("§a§l➕ §f添加新队伍")
+                .setLore("§7点击从预设可用颜色中",
+                        "§7选择并添加一支新队伍")
                 .build());
 
         inventory.setItem(27, new ItemBuilder(Material.ARROW)
-                .setName("§c§l← §fBack")
-                .setLore("§7Return to arena settings")
+                .setName("§c§l← §f返回上一级")
+                .setLore("§7返回房间主配置菜单")
                 .build());
 
         int teamCount = arena.getTeams().size();
         inventory.setItem(35, new ItemBuilder(Material.PLAYER_HEAD)
-                .setName("§e§lTeams: §f" + teamCount)
-                .setLore("§7Minimum required: §e2",
-                        teamCount >= 2 ? "§a✓ Ready to play!" : "§c✗ Add more teams!")
+                .setName("§e§l当前队伍数: §f" + teamCount)
+                .setLore("§7最少需要: §e2 支队伍",
+                        teamCount >= 2 ? "§a✓ 符合开赛要求！" : "§c✗ 队伍不足，请继续添加！")
                 .build());
 
         for (int i = 0; i < inventory.getSize(); i++) {

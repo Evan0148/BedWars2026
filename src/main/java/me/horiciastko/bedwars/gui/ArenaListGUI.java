@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public class ArenaListGUI extends BaseGUI {
 
     public ArenaListGUI() {
-        super("§8BedWars Arenas", 6);
+        super("§8起床战争 房间列表", 6);
     }
 
     @Override
@@ -21,24 +21,24 @@ public class ArenaListGUI extends BaseGUI {
                 break;
 
             inventory.setItem(slot++, new ItemBuilder(Material.MAP)
-                    .setName("§b§lArena: §f" + arena.getName())
+                    .setName("§b§l房间: §f" + arena.getName())
                     .setLore(
-                            "§7World: §e" + (arena.getWorldName() != null ? arena.getWorldName() : "§cNot set"),
-                            "§7Teams: §e" + arena.getTeams().size(),
-                            "§7Status: §e" + arena.getState(),
+                            "§7所属世界: §e" + (arena.getWorldName() != null ? arena.getWorldName() : "§c未设置"),
+                            "§7队伍数量: §e" + arena.getTeams().size(),
+                            "§7当前状态: §e" + arena.getState(),
                             "",
-                            "§eLeft-click to edit",
-                            "§cRight-click to delete")
+                            "§e左键点击编辑该房间",
+                            "§c右键点击删除该房间")
                     .build());
         }
 
         inventory.setItem(48, new ItemBuilder(Material.NETHER_STAR)
-                .setName("§a§lCreate New Arena")
-                .setLore("§7Click to create a new arena via command.").build());
+                .setName("§a§l创建新房间")
+                .setLore("§7点击获取创建新房间命令提示。").build());
 
         inventory.setItem(50, new ItemBuilder(Material.BEACON)
-                .setName("§b§lSet Main Lobby")
-                .setLore("§7Sets the global lobby location", "§7to your current position.", "", "§e▸ Click to set")
+                .setName("§b§l设置主大厅")
+                .setLore("§7将全服主大厅坐标设置在", "§7你当前的站立位置。", "", "§e▸ 点击设置")
                 .build());
 
         for (int i = 0; i < inventory.getSize(); i++) {

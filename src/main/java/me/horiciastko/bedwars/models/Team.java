@@ -27,6 +27,7 @@ public class Team {
     private Location basePos1;
     private Location basePos2;
     private final List<Location> generators = new ArrayList<>();
+    private final java.util.Set<Location> bedBlockLocations = new java.util.HashSet<>();
     private boolean bedBroken = false;
     private boolean eliminated = false;
     private final Map<String, Integer> upgrades = new HashMap<>();
@@ -58,6 +59,7 @@ public class Team {
         members.clear();
         upgrades.clear();
         activeTraps.clear();
+        bedBlockLocations.clear();
         bedBroken = false;
         eliminated = false;
         generatorTier = 1;

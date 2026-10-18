@@ -70,19 +70,19 @@ public class QuickBuySelectorGUI extends BaseGUI {
             String name = ChatColor.translateAlternateColorCodes('&', entry.data.getString("name", xMat.name()));
 
             ItemBuilder builder = new ItemBuilder(xMat).setName(name);
-            builder.addLoreLine("§eClick to add to Quick Buy!");
+            builder.addLoreLine("§e点击绑定至快捷购买槽位！");
 
             inventory.setItem(guiSlot, builder.build());
         }
 
         if (page > 0) {
-            inventory.setItem(45, new ItemBuilder(XMaterial.ARROW).setName("§aPrevious Page").build());
+            inventory.setItem(45, new ItemBuilder(XMaterial.ARROW).setName("§a上一页").build());
         }
         if (end < allItems.size()) {
-            inventory.setItem(53, new ItemBuilder(XMaterial.ARROW).setName("§aNext Page").build());
+            inventory.setItem(53, new ItemBuilder(XMaterial.ARROW).setName("§a下一页").build());
         }
 
-        inventory.setItem(49, new ItemBuilder(XMaterial.BARRIER).setName("§cBack to Shop").build());
+        inventory.setItem(49, new ItemBuilder(XMaterial.BARRIER).setName("§c返回商店").build());
     }
 
     @Override

@@ -59,13 +59,13 @@ public class TrapsGUI extends BaseGUI {
             }
 
             builder.addLoreLine("");
-            builder.addLoreLine("§7Cost: §b" + currentCost + " Diamonds");
+            builder.addLoreLine("§7价格: §b" + currentCost + " 颗钻石");
             builder.addLoreLine("");
 
             if (activeTraps >= limit) {
-                builder.addLoreLine("§cQueue Full!");
+                builder.addLoreLine("§c陷阱队列已满！");
             } else {
-                builder.addLoreLine("§eClick to queue!");
+                builder.addLoreLine("§e点击购买并加入队列！");
             }
 
             inventory.setItem(slot, builder.build());
@@ -78,7 +78,7 @@ public class TrapsGUI extends BaseGUI {
             }
         }
 
-        inventory.setItem(31, new ItemBuilder(Material.ARROW).setName("§aGo Back").build());
+        inventory.setItem(31, new ItemBuilder(Material.ARROW).setName("§a返回上一级").build());
     }
 
     @Override

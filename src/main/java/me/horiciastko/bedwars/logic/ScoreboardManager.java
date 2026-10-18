@@ -85,18 +85,20 @@ public class ScoreboardManager {
 
         if (arena == null) {
             if (editArena != null) {
-                linesTemplate = new ArrayList<>();
-                linesTemplate.add("§7" + LocalDateTime.now().format(dateFormatter));
-                linesTemplate.add(" ");
-                linesTemplate.add("§fArena: §a" + editArena.getName());
-                linesTemplate
-                        .add("§fWorld: §e" + (editArena.getWorldName() != null ? editArena.getWorldName() : "§cNone"));
-                linesTemplate.add("§fGroup: §b" + (editArena.getGroup() != null ? editArena.getGroup() : "Default"));
-                linesTemplate.add(" ");
-                linesTemplate.add("§fMax Players: §a" + editArena.getMaxPlayers());
-                linesTemplate.add("§fMin Players: §a" + editArena.getMinPlayers());
-                linesTemplate.add(" ");
-                linesTemplate.add("%server_ip%");
+                linesTemplate = plugin.getLanguageManager().getMessageList(player.getUniqueId(), "scoreboard-edit-lines");
+                if (linesTemplate.isEmpty() || linesTemplate.get(0).startsWith("§cMissing")) {
+                    linesTemplate = new ArrayList<>();
+                    linesTemplate.add("§7" + LocalDateTime.now().format(dateFormatter));
+                    linesTemplate.add(" ");
+                    linesTemplate.add("§f房间: §a" + editArena.getName());
+                    linesTemplate.add("§f世界: §e" + (editArena.getWorldName() != null ? editArena.getWorldName() : "§c无"));
+                    linesTemplate.add("§f分组: §b" + (editArena.getGroup() != null ? editArena.getGroup() : "默认"));
+                    linesTemplate.add(" ");
+                    linesTemplate.add("§f最大人数: §a" + editArena.getMaxPlayers());
+                    linesTemplate.add("§f最小人数: §a" + editArena.getMinPlayers());
+                    linesTemplate.add(" ");
+                    linesTemplate.add("%server_ip%");
+                }
             } else {
                 linesTemplate = plugin.getLanguageManager().getMessageList(player.getUniqueId(),
                         "scoreboard-lobby-lines");
@@ -268,8 +270,12 @@ public class ScoreboardManager {
 
             result = result
                     .replace("%map%", arena.getName())
+                    .replace("%arena%", arena.getName())
+                    .replace("%world%", arena.getWorldName() != null ? arena.getWorldName() : "None")
+                    .replace("%group%", arena.getGroup() != null ? arena.getGroup() : "Default")
                     .replace("%players%", String.valueOf(arena.getPlayers().size()))
                     .replace("%max_players%", String.valueOf(arena.getMaxPlayers()))
+                    .replace("%min_players%", String.valueOf(arena.getMinPlayers()))
                     .replace("%mode%", arena.getMode().getDisplayName())
                     .replace("%status%", statusStr)
                     .replace("%event_name%", nextEvent)

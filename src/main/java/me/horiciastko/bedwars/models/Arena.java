@@ -34,8 +34,17 @@ public class Arena {
     private ArenaMode mode = ArenaMode.SOLO;
     private PvpMode pvpMode = PvpMode.LEGACY_1_8;
     private String group = "Default";
+    private boolean expMode = false;
     private boolean enabled = true;
     private boolean resetting = false;
+
+    public boolean isExpMode() {
+        return expMode || (group != null && (group.equalsIgnoreCase("exp") || group.equalsIgnoreCase("expmode")));
+    }
+
+    public void setExpMode(boolean expMode) {
+        this.expMode = expMode;
+    }
 
     public enum PvpMode {
         LEGACY_1_8("1.8"), MODERN_1_16("1.16");

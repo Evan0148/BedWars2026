@@ -99,13 +99,13 @@ public class ArenaSelectorGUI extends BaseGUI {
 
         if (filterMode != null) {
             inventory.setItem(48, new ItemBuilder(com.cryptomorin.xseries.XMaterial.FEATHER)
-                    .setName("&aRandom Join")
-                    .setLore("&7Join random maps", "", "&eClick to play!")
+                    .setName("&a随机匹配")
+                    .setLore("&7快速随机加入地图", "", "&e点击开始游戏！")
                     .build());
 
             inventory.setItem(50, new ItemBuilder(com.cryptomorin.xseries.XMaterial.FIREWORK_ROCKET)
-                    .setName("&fGo Back")
-                    .setLore("&7Back to " + ModeJoinGUI.readableMode(filterMode) + " menu")
+                    .setName("&f返回上一页")
+                    .setLore("&7返回 " + ModeJoinGUI.readableMode(filterMode) + " 菜单")
                     .build());
         }
     }
@@ -163,13 +163,13 @@ public class ArenaSelectorGUI extends BaseGUI {
         return new ItemBuilder(com.cryptomorin.xseries.XMaterial.MAP)
             .setName("&a" + arena.getName())
             .setLore(
-            "&f" + modeLine,
+            "&f模式: " + modeLine,
             "",
-            "&7Available maps: &a" + availableMaps,
-            "&7Status: &f" + stateName,
-            "&7Current Player: &f" + arena.getPlayers().size() + "/" + arena.getMaxPlayers(),
+            "&7可用地图数: &a" + availableMaps,
+            "&7当前状态: &f" + stateName,
+            "&7当前玩家: &f" + arena.getPlayers().size() + "/" + arena.getMaxPlayers(),
             "",
-            "&eClick to Join")
+            "&e点击加入游戏")
                 .build();
     }
 

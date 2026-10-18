@@ -268,6 +268,7 @@ public class GameManager {
         }
 
         sessionStats.put(arena, new ConcurrentHashMap<>());
+        arena.getPlacedBlocks().clear();
         arena.setState(Arena.GameState.IN_GAME);
 
         new BukkitRunnable() {
@@ -298,14 +299,16 @@ public class GameManager {
 
         arena.getInitialBedStates().clear();
         for (Team team : arena.getTeams()) {
+            team.getBedBlockLocations().clear();
             if (team.getBedLocation() != null) {
                 org.bukkit.block.Block b = team.getBedLocation().getBlock();
-                for (int x = -1; x <= 1; x++) {
-                    for (int y = -1; y <= 1; y++) {
-                        for (int z = -1; z <= 1; z++) {
+                for (int x = -2; x <= 2; x++) {
+                    for (int y = -2; y <= 2; y++) {
+                        for (int z = -2; z <= 2; z++) {
                             org.bukkit.block.Block rel = b.getRelative(x, y, z);
                             String name = rel.getType().name();
                             if (name.endsWith("_BED") || name.equals("BED_BLOCK")) {
+                                team.getBedBlockLocations().add(rel.getLocation());
                                 arena.getInitialBedStates().add(rel.getState());
                             }
                         }
@@ -317,8 +320,10 @@ public class GameManager {
         for (Team team : arena.getTeams()) {
             if (team.getMembers().isEmpty()) {
                 team.setBedBroken(true);
-                if (team.getBedLocation() != null) {
-                    team.getBedLocation().getBlock().setType(org.bukkit.Material.AIR);
+                for (Location bedLoc : team.getBedBlockLocations()) {
+                    if (bedLoc.getWorld() != null) {
+                        bedLoc.getBlock().setType(org.bukkit.Material.AIR);
+                    }
                 }
             }
         }
@@ -718,6 +723,14 @@ public class GameManager {
         boolean isFinal = team.isBedBroken();
 
         if (killer != null && killer.isOnline()) {
+            if (arena.isExpMode()) {
+                int victimLevels = victim.getLevel();
+                if (victimLevels > 0) {
+                    killer.setLevel(killer.getLevel() + victimLevels);
+                    killer.playSound(killer.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.2f);
+                    killer.sendMessage("§e你从 §f" + victim.getName() + " §e身上夺取了 §a" + victimLevels + " §e级经验！");
+                }
+            }
             List<org.bukkit.Material> resources = java.util.Arrays.asList(org.bukkit.Material.IRON_INGOT,
                     org.bukkit.Material.GOLD_INGOT, org.bukkit.Material.EMERALD,
                     org.bukkit.Material.DIAMOND);
@@ -732,6 +745,11 @@ public class GameManager {
                                     .replace("%player%", victim.getName()));
                 }
             }
+        }
+        if (arena.isExpMode()) {
+            victim.setLevel(0);
+            victim.setExp(0);
+            victim.setTotalExperience(0);
         }
 
         player.getInventory().clear();

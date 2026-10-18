@@ -1,0 +1,58 @@
+############################################################
+#                                                          #
+#                 BedWars NPC 中文配置                      #
+#                                                          #
+############################################################
+
+# 全局 NPC 设置
+settings:
+  look-speed: 5.0
+
+types:
+  # 局内 NPC
+  shop:
+    title: "&b&l道具商店"
+    description: "&e&l点击打开"
+    entity-type: "VILLAGER"
+    skin: ""
+    
+  upgrades:
+    title: "&b&l团队升级"
+    description: "&e&l点击打开"
+    entity-type: "VILLAGER"
+    skin: ""
+
+  # 大厅加入游戏 NPC
+  solo:
+    title: "&a&l单人模式"
+    description: "&e&l点击加入游戏"
+    entity-type: "PLAYER"
+    skin: "Steve"
+    mode: "SOLO"
+    
+  duo:
+    title: "&a&l双人模式"
+    description: "&e&l点击加入游戏"
+    entity-type: "PLAYER"
+    skin: "Alex"
+    mode: "DUO"
+
+  trio:
+    title: "&a&l三人模式 (3v3v3v3)"
+    description: "&e&l点击加入游戏"
+    entity-type: "PLAYER"
+    skin: "TrioSkin"
+    mode: "TRIO"
+
+  quad:
+    title: "&a&l四人模式 (4v4v4v4)"
+    description: "&e&l点击加入游戏"
+    entity-type: "PLAYER"
+    skin: "QuadSkin"
+    mode: "SQUAD"
+
+  play:
+    title: "&a&l起床战争"
+    description: "&e&l点击加入游戏"
+    entity-type: "PLAYER"
+    skin: "Steve"

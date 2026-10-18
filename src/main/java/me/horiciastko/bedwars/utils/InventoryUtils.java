@@ -60,4 +60,54 @@ public class InventoryUtils {
         }
         return false;
     }
+
+    public static int getTotalExperience(Player player) {
+        int exp = Math.round(getExpAtLevel(player.getLevel()) * player.getExp());
+        int currentLevel = player.getLevel();
+        while (currentLevel > 0) {
+            currentLevel--;
+            exp += getExpAtLevel(currentLevel);
+        }
+        if (exp < 0) {
+            exp = Integer.MAX_VALUE;
+        }
+        return exp;
+    }
+
+    public static int getExpAtLevel(int level) {
+        if (level <= 15) {
+            return (2 * level) + 7;
+        }
+        if (level <= 30) {
+            return (5 * level) - 38;
+        }
+        return (9 * level) - 158;
+    }
+
+    public static void setTotalExperience(Player player, int exp) {
+        if (exp < 0) {
+            exp = 0;
+        }
+        player.setExp(0);
+        player.setLevel(0);
+        player.setTotalExperience(0);
+
+        int currentExp = exp;
+        while (currentExp > 0) {
+            int expToNextLevel = getExpAtLevel(player.getLevel());
+            if (currentExp >= expToNextLevel) {
+                currentExp -= expToNextLevel;
+                player.setLevel(player.getLevel() + 1);
+            } else {
+                player.setExp((float) currentExp / (float) expToNextLevel);
+                currentExp = 0;
+            }
+        }
+        player.setTotalExperience(exp);
+    }
+
+    public static void changeTotalExperience(Player player, int amount) {
+        int current = getTotalExperience(player);
+        setTotalExperience(player, Math.max(0, current + amount));
+    }
 }

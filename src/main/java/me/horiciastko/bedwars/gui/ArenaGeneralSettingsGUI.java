@@ -12,48 +12,48 @@ public class ArenaGeneralSettingsGUI extends BaseGUI {
     private final Arena arena;
 
     public ArenaGeneralSettingsGUI(Arena arena) {
-        super("§8General Settings: §1" + arena.getName(), 3);
+        super("§8常规游戏设置: §1" + arena.getName(), 3);
         this.arena = arena;
     }
 
     @Override
     public void setContents(Player player) {
         inventory.setItem(10, new ItemBuilder(Material.LEVER)
-                .setName("§e§lMin Players")
+                .setName("§e§l最少玩家数")
                 .setLore(
-                        "§7Current: §f" + arena.getMinPlayers(),
+                        "§7当前设定: §f" + arena.getMinPlayers(),
                         "",
-                        "§eLeft-click to +1",
-                        "§cRight-click to -1")
+                        "§e左键点击 +1",
+                        "§c右键点击 -1")
                 .build());
 
         inventory.setItem(12, new ItemBuilder(Material.REPEATER)
-                .setName("§e§lMax Players")
+                .setName("§e§l最多玩家数")
                 .setLore(
-                        "§7Current: §f" + arena.getMaxPlayers(),
+                        "§7当前设定: §f" + arena.getMaxPlayers(),
                         "",
-                        "§eLeft-click to +1",
-                        "§cRight-click to -1")
+                        "§e左键点击 +1",
+                        "§c右键点击 -1")
                 .build());
 
         inventory.setItem(14, new ItemBuilder(Material.PAPER)
-                .setName("§e§lGame Mode")
+                .setName("§e§l游戏模式")
                 .setLore(
-                        "§7Current: §b" + arena.getMode().getDisplayName(),
+                        "§7当前模式: §b" + arena.getMode().getDisplayName(),
                         "",
-                        "§eClick to cycle modes")
+                        "§e点击循环切换模式")
                 .build());
 
         inventory.setItem(16, new ItemBuilder(Material.IRON_SWORD)
-                .setName("§e§lPVP Mode")
+                .setName("§e§lPVP 攻击机制")
                 .setLore(
-                        "§7Current: §a" + arena.getPvpMode().getDisplayName(),
+                        "§7当前设定: §a" + arena.getPvpMode().getDisplayName(),
                         "",
-                        "§eClick to toggle 1.8 / 1.16 PVP")
+                        "§e点击切换 1.8(无CD) / 1.16(有CD)")
                 .build());
 
         inventory.setItem(22, new ItemBuilder(Material.ARROW)
-                .setName("§7Go Back")
+                .setName("§7返回上一级")
                 .build());
 
         for (int i = 0; i < inventory.getSize(); i++) {

@@ -13,7 +13,7 @@ public class ArenaSettingsGUI extends BaseGUI {
         private final Arena arena;
 
         public ArenaSettingsGUI(Arena arena) {
-                super("§8§l✦ §9" + arena.getName() + " §8§l✦ §7Setup", 5);
+                super("§8§l✦ §9" + arena.getName() + " §8§l✦ §7房间配置向导", 5);
                 this.arena = arena;
         }
 
@@ -49,17 +49,17 @@ public class ArenaSettingsGUI extends BaseGUI {
                 inventory.setItem(10,
                                 new ItemBuilder(worldSet ? com.cryptomorin.xseries.XMaterial.GRASS_BLOCK
                                                 : com.cryptomorin.xseries.XMaterial.DIRT)
-                                                .setName(worldSet ? "§a§l✓ §fWorld Selected" : "§c§l✗ §fSelect World")
+                                                .setName(worldSet ? "§a§l✓ §f世界已选定" : "§c§l✗ §f选择世界")
                                                 .setLore(
                                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                                "§7Current: " + (worldSet ? "§e" + arena.getWorldName()
-                                                                                : "§cNone"),
+                                                                "§7当前世界: " + (worldSet ? "§e" + arena.getWorldName()
+                                                                                : "§c未设置"),
                                                                 "",
-                                                                worldSet ? "§a✓ World is configured!"
-                                                                                : "§c✗ Choose a world first!",
+                                                                worldSet ? "§a✓ 该世界已配置完成！"
+                                                                                : "§c✗ 请先选择地图所在世界！",
                                                                 "",
-                                                                "§e▸ Click to select world",
-                                                                "§7▸ Right-click to clear",
+                                                                "§e▸ 左键点击打开世界选择器",
+                                                                "§7▸ 右键点击清除当前世界绑定",
                                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                                 .build());
 
@@ -67,17 +67,17 @@ public class ArenaSettingsGUI extends BaseGUI {
                 boolean lobbySet = arena.getLobbyLocation() != null;
                 boolean step2Done = boundsSet && lobbySet;
                 inventory.setItem(11, new ItemBuilder(step2Done ? com.cryptomorin.xseries.XMaterial.EMERALD_ORE : com.cryptomorin.xseries.XMaterial.STONE)
-                                .setName(step2Done ? "§a§l✓ §fArena Bounds" : "§6§l⚠ §fArena Bounds")
+                                .setName(step2Done ? "§a§l✓ §f房间边界与大厅" : "§6§l⚠ §f房间边界与大厅")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§7Pos 1: " + (arena.getPos1() != null ? "§a✓ Set" : "§c✗ Not set"),
-                                                "§7Pos 2: " + (arena.getPos2() != null ? "§a✓ Set" : "§c✗ Not set"),
-                                                "§7Lobby: " + (lobbySet ? "§a✓ Set" : "§c✗ Not set"),
+                                                "§7边界点 1: " + (arena.getPos1() != null ? "§a✓ 已设置" : "§c✗ 未设置"),
+                                                "§7边界点 2: " + (arena.getPos2() != null ? "§a✓ 已设置" : "§c✗ 未设置"),
+                                                "§7等待大厅: " + (lobbySet ? "§a✓ 已设置" : "§c✗ 未设置"),
                                                 "",
-                                                step2Done ? "§a✓ Bounds configured!" : "§6⚠ Complete this step!",
+                                                step2Done ? "§a✓ 边界与大厅已配置就绪！" : "§6⚠ 必须完成此步骤！",
                                                 "",
-                                                "§e▸ Click to setup locations",
-                                                "§7▸ Right-click to clear all",
+                                                "§e▸ 点击进入坐标设置界面",
+                                                "§7▸ 右键点击清除上述所有坐标",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
@@ -86,18 +86,18 @@ public class ArenaSettingsGUI extends BaseGUI {
                                 .allMatch(t -> t.getSpawnLocation() != null && t.getBedLocation() != null);
                 inventory.setItem(12, new ItemBuilder(teamsReady ? com.cryptomorin.xseries.XMaterial.WHITE_BANNER
                                 : com.cryptomorin.xseries.XMaterial.BLACK_BANNER)
-                                .setName(teamsReady ? "§a§l✓ §fTeams" : "§6§l⚠ §fTeams")
+                                .setName(teamsReady ? "§a§l✓ §f队伍配置" : "§6§l⚠ §f队伍配置")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§7Teams: §e" + teamCount,
+                                                "§7当前队伍数: §e" + teamCount,
                                                 "",
                                                 step2Done
-                                                                ? (teamsReady ? "§a✓ All teams ready!"
-                                                                                : "§6⚠ Set spawns & beds!")
-                                                                : "§c✗ Complete Step 2 first!",
+                                                                ? (teamsReady ? "§a✓ 所有队伍配置完整！"
+                                                                                : "§6⚠ 请配置队伍出生点与床！")
+                                                                : "§c✗ 请先完成边界与大厅步骤！",
                                                 "",
-                                                step2Done ? "§e▸ Click to manage teams"
-                                                                : "§c▸ Locked - complete Step 2!",
+                                                step2Done ? "§e▸ 点击管理队伍"
+                                                                : "§c▸ 已锁定 - 请先完成第 2 步！",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
@@ -105,55 +105,55 @@ public class ArenaSettingsGUI extends BaseGUI {
                 int emeraldCount = arena.getEmeraldGenerators().size();
                 boolean gensSet = diamondCount > 0 || emeraldCount > 0;
                 inventory.setItem(13, new ItemBuilder(com.cryptomorin.xseries.XMaterial.DIAMOND)
-                                .setName(gensSet ? "§b§l✓ §fGlobal Generators" : "§6§l⚠ §fGlobal Generators")
+                                .setName(gensSet ? "§b§l✓ §f全局资源生成点" : "§6§l⚠ §f全局资源生成点")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§bDiamond: §f" + diamondCount,
-                                                "§aEmerald: §f" + emeraldCount,
+                                                "§b钻石刷新点: §f" + diamondCount,
+                                                "§a绿宝石刷新点: §f" + emeraldCount,
                                                 "",
-                                                gensSet ? "§a✓ Generators configured!" : "§6⚠ Add some generators!",
+                                                gensSet ? "§a✓ 全局生成点已配置！" : "§6⚠ 请在地图中添加生成点！",
                                                 "",
-                                                "§e▸ Click to manage generators",
+                                                "§e▸ 点击管理生成点",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
                 long shopsSet = arena.getTeams().stream().filter(t -> t.getShopLocation() != null).count();
                 inventory.setItem(19, new ItemBuilder(com.cryptomorin.xseries.XMaterial.VILLAGER_SPAWN_EGG)
-                                .setName("§a§lShop NPCs")
+                                .setName("§a§l商店 NPC 配置")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§7Configured: §e" + shopsSet + "/" + teamCount,
+                                                "§7已配置: §e" + shopsSet + "/" + teamCount,
                                                 "",
-                                                "§e▸ Click to manage shops",
-                                                "§7▸ Auto-detect or manual setup",
+                                                "§e▸ 点击管理商店 NPC",
+                                                "§7▸ 支持自动检测与手动设置",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
                 inventory.setItem(21, new ItemBuilder(com.cryptomorin.xseries.XMaterial.COMPARATOR)
-                                .setName("§6§l⚙ §fGame Settings")
+                                .setName("§6§l⚙ §f常规游戏设置")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§7Min Players: §e" + arena.getMinPlayers(),
-                                                "§7Max Players: §e" + arena.getMaxPlayers(),
-                                                "§7Mode: §b" + arena.getMode().getDisplayName(),
-                                                "§7PvP: §a" + arena.getPvpMode().getDisplayName(),
+                                                "§7最小人数: §e" + arena.getMinPlayers(),
+                                                "§7最大人数: §e" + arena.getMaxPlayers(),
+                                                "§7模式: §b" + arena.getMode().getDisplayName(),
+                                                "§7PvP 机制: §a" + arena.getPvpMode().getDisplayName(),
                                                 "",
-                                                "§e▸ Click to configure",
+                                                "§e▸ 点击进行调整",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
                 boolean multiModeEnabled = BedWars.getInstance().getConfig()
                                 .getBoolean("join-gui.allow-multi-mode-arenas", true);
                 inventory.setItem(22, new ItemBuilder(multiModeEnabled ? com.cryptomorin.xseries.XMaterial.LIME_CONCRETE : com.cryptomorin.xseries.XMaterial.GRAY_CONCRETE)
-                                .setName("§b§lJoin Mode Reuse")
+                                .setName("§b§l房间模式动态复用")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§7Empty waiting arenas can",
-                                                "§7be reused for selected mode.",
+                                                "§7空闲的等待房间可根据",
+                                                "§7玩家选择的模式动态复用。",
                                                 "",
-                                                "§7Current: " + (multiModeEnabled ? "§aON" : "§cOFF"),
+                                                "§7当前状态: " + (multiModeEnabled ? "§a开启" : "§c关闭"),
                                                 "",
-                                                "§e▸ Click to toggle globally",
+                                                "§e▸ 点击切换全局开关",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
@@ -161,53 +161,53 @@ public class ArenaSettingsGUI extends BaseGUI {
                 inventory.setItem(23,
                                 new ItemBuilder(enabled ? com.cryptomorin.xseries.XMaterial.LIME_DYE
                                                 : com.cryptomorin.xseries.XMaterial.GRAY_DYE)
-                                                .setName(enabled ? "§a§l✓ §fArena Enabled" : "§c§l✗ §fArena Disabled")
+                                                .setName(enabled ? "§a§l✓ §f房间状态: 已启用" : "§c§l✗ §f房间状态: 已禁用")
                                                 .setLore(
                                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                                "§7Status: " + (enabled ? "§aENABLED" : "§cDISABLED"),
+                                                                "§7状态: " + (enabled ? "§a已启用 (ENABLED)" : "§c已禁用 (DISABLED)"),
                                                                 "",
                                                                 enabled
-                                                                                ? "§aPlayers can join this arena"
-                                                                                : "§cPlayers cannot join",
+                                                                                ? "§a玩家可以正常加入该房间"
+                                                                                : "§c玩家无法加入该房间",
                                                                 "",
-                                                                "§e▸ Click to toggle",
+                                                                "§e▸ 点击切换启用状态",
                                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                                 .build());
 
                 inventory.setItem(25, new ItemBuilder(com.cryptomorin.xseries.XMaterial.STICK)
-                                .setName("§e§l⚡ §fSelection Wand")
+                                .setName("§e§l⚡ §f选区魔杖")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                "§7Use to select team base regions",
+                                                "§7用于圈定队伍基地的保护区域",
                                                 "",
-                                                "§aLeft-click: §7Set Pos 1",
-                                                "§aRight-click: §7Set Pos 2",
+                                                "§a左键点击: §7设置对角点 1",
+                                                "§a右键点击: §7设置对角点 2",
                                                 "",
-                                                "§e▸ Click to get wand",
+                                                "§e▸ 点击获取魔杖",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
                 boolean isReady = worldSet && step2Done && teamsReady;
                 inventory.setItem(31, new ItemBuilder(isReady ? com.cryptomorin.xseries.XMaterial.EMERALD_BLOCK : com.cryptomorin.xseries.XMaterial.COAL_BLOCK)
-                                .setName(isReady ? "§a§l✓ §fFinalize Arena" : "§c§l✗ §fNot Ready")
+                                .setName(isReady ? "§a§l✓ §f完成并启用房间" : "§c§l✗ §f尚未就绪")
                                 .setLore(
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━",
-                                                isReady ? "§aAll requirements met!" : "§cComplete setup first:",
+                                                isReady ? "§a所有配置项均已达标！" : "§c请先完成以下必须项:",
                                                 "",
-                                                worldSet ? "§a✓ §7World selected" : "§c✗ §7World not selected",
-                                                step2Done ? "§a✓ §7Bounds & lobby set" : "§c✗ §7Bounds/lobby missing",
-                                                teamsReady ? "§a✓ §7Teams configured" : "§c✗ §7Teams incomplete",
+                                                worldSet ? "§a✓ §7世界已选择" : "§c✗ §7尚未绑定世界",
+                                                step2Done ? "§a✓ §7边界与大厅已配置" : "§c✗ §7缺少边界坐标或等待大厅",
+                                                teamsReady ? "§a✓ §7队伍已完整配置" : "§c✗ §7队伍不足2个或缺少床/出生点",
                                                 "",
-                                                isReady ? "§e▸ Click to finish setup" : "§cComplete required steps!",
+                                                isReady ? "§e▸ 点击保存并启用房间" : "§c请先完成上述未勾选的步骤！",
                                                 "§8━━━━━━━━━━━━━━━━━━━━━━━")
                                 .build());
 
                 inventory.setItem(33, new ItemBuilder(com.cryptomorin.xseries.XMaterial.BARRIER)
-                                .setName("§c§l✖ §fExit Setup")
+                                .setName("§c§l✖ §f退出配置")
                                 .setLore(
-                                                "§7Close without saving new changes",
+                                                "§7关闭菜单并退出编辑状态",
                                                 "",
-                                                "§c▸ Click to exit")
+                                                "§c▸ 点击退出")
                                 .build());
 
                 for (int i = 36; i < 45; i++) {
@@ -320,13 +320,13 @@ public class ArenaSettingsGUI extends BaseGUI {
                 ItemStack stick = new ItemStack(Material.STICK);
                 org.bukkit.inventory.meta.ItemMeta meta = stick.getItemMeta();
                 if (meta != null) {
-                        meta.setDisplayName("§e§lBase Selection Wand");
+                        meta.setDisplayName("§e§l基地选区工具 (木棒)");
                         java.util.List<String> lore = new java.util.ArrayList<>();
-                        lore.add("§7Arena: §b" + arena.getName());
+                        lore.add("§7房间: §b" + arena.getName());
                         lore.add("");
-                        lore.add("§aLeft-click: §7Set Pos 1");
-                        lore.add("§aRight-click: §7Set Pos 2");
-                        lore.add("§7(Auto-detects closest team)");
+                        lore.add("§a左键: §7设置点 1");
+                        lore.add("§a右键: §7设置点 2");
+                        lore.add("§7(自动检测最近的队伍)");
                         meta.setLore(lore);
                         stick.setItemMeta(meta);
                 }

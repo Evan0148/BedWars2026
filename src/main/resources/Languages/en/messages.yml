@@ -664,3 +664,15 @@ scoreboard-ingame-lines:
   - "%teams_status%"
   - ""
   - "&e%server_ip%"
+
+scoreboard-edit-lines:
+  - "&7%date%"
+  - " "
+  - "&fArena: &a%arena%"
+  - "&fWorld: &e%world%"
+  - "&fGroup: &b%group%"
+  - " "
+  - "&fMax Players: &a%max_players%"
+  - "&fMin Players: &a%min_players%"
+  - " "
+  - "&e%server_ip%"

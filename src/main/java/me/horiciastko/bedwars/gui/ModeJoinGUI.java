@@ -18,7 +18,7 @@ public class ModeJoinGUI extends BaseGUI {
     private final Arena.ArenaMode mode;
 
     public ModeJoinGUI(Arena.ArenaMode mode) {
-        super("&8Bed Wars " + readableMode(mode), 3);
+        super("&8起床战争 " + readableMode(mode), 3);
         this.plugin = BedWars.getInstance();
         this.mode = mode;
     }
@@ -36,41 +36,41 @@ public class ModeJoinGUI extends BaseGUI {
                 .count();
 
         inventory.setItem(11, new ItemBuilder(XMaterial.RED_BED)
-                .setName("&aBedwars (" + readableMode(mode) + ")")
+                .setName("&a起床战争 (" + readableMode(mode) + ")")
                 .setLore(
-                        "&7Play Bedwars " + readableMode(mode),
+                        "&7加入 " + readableMode(mode) + " 比赛",
                         " ",
-                        "&7Online: &f" + online,
+                        "&7当前在线: &f" + online,
                         " ",
-                        "&eClick to play!")
+                        "&e点击加入游戏！")
                 .build());
 
         inventory.setItem(13, new ItemBuilder(XMaterial.OAK_SIGN)
-                .setName("&aMap Selector (" + readableMode(mode) + ")")
+                .setName("&a地图选择器 (" + readableMode(mode) + ")")
                 .setLore(
-                        "&7Pick which map you want to play",
-                        "&7from the available games",
+                        "&7从可用的游戏房间中",
+                        "&7选择你想玩的地图",
                         " ",
-                        "&eClick to play!")
+                        "&e点击查看房间列表！")
                 .build());
 
         boolean canRejoin = player.hasPermission("bedwars.command.rejoin")
                 && plugin.getArenaManager().getLastArena(player.getUniqueId()) != null;
         inventory.setItem(15, new ItemBuilder(canRejoin ? XMaterial.ENDER_PEARL : XMaterial.GRAY_DYE)
-                .setName(canRejoin ? "&cClick here to rejoin!" : "&7No game to rejoin")
+                .setName(canRejoin ? "&c点击重连比赛！" : "&7暂无进行中的比赛")
                 .setLore(canRejoin
                         ? java.util.Arrays.asList(
-                                "&7Click here to rejoin your game",
-                                "&7if you have been disconnected",
-                                "&7from it.")
+                                "&7点击此处重新连接到",
+                                "&7你之前意外掉线的",
+                                "&7起床战争游戏。")
                         : java.util.Arrays.asList(
-                                "&7You do not have an active",
-                                "&7match to rejoin."))
+                                "&7你当前没有任何进行中",
+                                "&7的比赛可供重新连接。"))
                 .build());
 
         inventory.setItem(22, new ItemBuilder(XMaterial.BARRIER)
-                .setName("&cClose")
-                .setLore("&7Return to lobby view")
+                .setName("&c关闭")
+                .setLore("&7返回大厅视图")
                 .build());
     }
 
@@ -159,17 +159,17 @@ public class ModeJoinGUI extends BaseGUI {
 
     public static String readableMode(Arena.ArenaMode mode) {
         if (mode == null) {
-            return "BedWars";
+            return "起床战争";
         }
         switch (mode) {
             case SOLO:
-                return "Solo";
+                return "单人模式";
             case DUO:
-                return "Doubles";
+                return "双人模式";
             case TRIO:
-                return "Triples";
+                return "三人模式";
             case SQUAD:
-                return "Quads";
+                return "四人模式";
             default:
                 return ChatColor.stripColor(mode.getDisplayName());
         }

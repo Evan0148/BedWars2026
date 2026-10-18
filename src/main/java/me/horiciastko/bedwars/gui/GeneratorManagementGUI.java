@@ -12,7 +12,7 @@ public class GeneratorManagementGUI extends BaseGUI {
     private final Arena arena;
 
     public GeneratorManagementGUI(Arena arena) {
-        super("§8Global Generators: " + arena.getName(), 3);
+        super("§8全局生成点管理: " + arena.getName(), 3);
         this.arena = arena;
     }
 
@@ -26,25 +26,25 @@ public class GeneratorManagementGUI extends BaseGUI {
     @Override
     public void setContents(Player player) {
         inventory.setItem(11, new ItemBuilder(Material.DIAMOND_BLOCK)
-                .setName("§b§lDiamond Generators")
+                .setName("§b§l钻石刷新点")
                 .setLore(
-                        "§7Current: §f" + arena.getDiamondGenerators().size(),
+                        "§7当前数量: §f" + arena.getDiamondGenerators().size(),
                         "",
-                        "§eLeft-click to add generator at your position",
-                        "§cRight-click to remove last added")
+                        "§e左键点击 在你当前站立位置添加刷新点",
+                        "§c右键点击 移除最后添加的一个刷新点")
                 .build());
 
         inventory.setItem(15, new ItemBuilder(Material.EMERALD_BLOCK)
-                .setName("§a§lEmerald Generators")
+                .setName("§a§l绿宝石刷新点")
                 .setLore(
-                        "§7Current: §f" + arena.getEmeraldGenerators().size(),
+                        "§7当前数量: §f" + arena.getEmeraldGenerators().size(),
                         "",
-                        "§eLeft-click to add generator at your position",
-                        "§cRight-click to remove last added")
+                        "§e左键点击 在你当前站立位置添加刷新点",
+                        "§c右键点击 移除最后添加的一个刷新点")
                 .build());
 
         inventory.setItem(22, new ItemBuilder(Material.ARROW)
-                .setName("§7Go Back")
+                .setName("§7返回上一级")
                 .build());
 
         for (int i = 0; i < inventory.getSize(); i++) {

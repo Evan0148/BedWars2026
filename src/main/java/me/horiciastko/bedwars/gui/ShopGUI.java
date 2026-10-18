@@ -251,45 +251,67 @@ public class ShopGUI extends BaseGUI {
 
         ItemBuilder builder = new ItemBuilder(xMat, amount).setName(name);
 
+        me.horiciastko.bedwars.models.Arena currentArena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
+        boolean isExpMode = (currentArena != null && currentArena.isExpMode());
+        int expCost = 0;
+        boolean useExpCurrency = false;
+
+        if (isExpMode && xCurrency != XMaterial.DIAMOND) {
+            useExpCurrency = true;
+            if (xCurrency == XMaterial.IRON_INGOT) {
+                expCost = cost * 1;
+            } else if (xCurrency == XMaterial.GOLD_INGOT) {
+                expCost = cost * 4;
+            } else if (xCurrency == XMaterial.EMERALD) {
+                expCost = cost * 20;
+            } else {
+                expCost = cost * 1;
+            }
+        }
+
         if (cost > 0 || !xMat.name().contains("GLASS_PANE")) {
             String currencyName;
-            switch (xCurrency) {
-                case IRON_INGOT:
-                    currencyName = "Iron";
-                    break;
-                case GOLD_INGOT:
-                    currencyName = "Gold";
-                    break;
-                case EMERALD:
-                    currencyName = "Emerald";
-                    break;
-                default:
-                    currencyName = xCurrency.name();
-                    break;
-            }
-
             String costColor;
-            switch (xCurrency) {
-                case IRON_INGOT:
-                    costColor = "§f";
-                    break;
-                case GOLD_INGOT:
-                    costColor = "§6";
-                    break;
-                case EMERALD:
-                    costColor = "§2";
-                    break;
-                default:
-                    costColor = "§7";
-                    break;
-            }
 
-            if (cost > 0) {
+            if (useExpCurrency) {
+                currencyName = "级经验";
+                costColor = "§a";
                 builder.addLoreLine(
                         BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-cost")
-                                .replace("%color%", costColor).replace("%amount%", String.valueOf(cost))
+                                .replace("%color%", costColor).replace("%amount%", String.valueOf(expCost))
                                 .replace("%currency%", currencyName));
                 builder.addLoreLine("");
+            } else {
+                switch (xCurrency) {
+                    case IRON_INGOT:
+                        currencyName = "Iron";
+                        costColor = "§f";
+                        break;
+                    case GOLD_INGOT:
+                        currencyName = "Gold";
+                        costColor = "§6";
+                        break;
+                    case EMERALD:
+                        currencyName = "Emerald";
+                        costColor = "§2";
+                        break;
+                    case DIAMOND:
+                        currencyName = "Diamond";
+                        costColor = "§b";
+                        break;
+                    default:
+                        currencyName = xCurrency.name();
+                        costColor = "§7";
+                        break;
+                }
+
+                if (cost > 0) {
+                    builder.addLoreLine(
+                            BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-cost")
+                                    .replace("%color%", costColor).replace("%amount%", String.valueOf(cost))
+                                    .replace("%currency%", currencyName));
+                    builder.addLoreLine("");
+                }
             }
         }
 
@@ -301,27 +323,35 @@ public class ShopGUI extends BaseGUI {
         }
 
         if (xMat != XMaterial.BARRIER && !xMat.name().contains("GLASS_PANE")) {
-            Material currencyMat = xCurrency.parseMaterial();
-            if (currencyMat != null
-                    && !me.horiciastko.bedwars.utils.InventoryUtils.hasEnough(player, currencyMat, cost)) {
-                String currencyName;
-                switch (xCurrency) {
-                    case IRON_INGOT:
-                        currencyName = "Iron";
-                        break;
-                    case GOLD_INGOT:
-                        currencyName = "Gold";
-                        break;
-                    case EMERALD:
-                        currencyName = "Emerald";
-                        break;
-                    default:
-                        currencyName = xCurrency.name();
-                        break;
+            if (useExpCurrency) {
+                if (player.getLevel() < expCost) {
+                    builder.addLoreLine(
+                            BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-not-enough")
+                                    .replace("%currency%", "级经验"));
                 }
-                builder.addLoreLine(
-                        BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-not-enough")
-                                .replace("%currency%", currencyName));
+            } else {
+                Material currencyMat = xCurrency.parseMaterial();
+                if (currencyMat != null
+                        && !me.horiciastko.bedwars.utils.InventoryUtils.hasEnough(player, currencyMat, cost)) {
+                    String currencyName;
+                    switch (xCurrency) {
+                        case IRON_INGOT:
+                            currencyName = "Iron";
+                            break;
+                        case GOLD_INGOT:
+                            currencyName = "Gold";
+                            break;
+                        case EMERALD:
+                            currencyName = "Emerald";
+                            break;
+                        default:
+                            currencyName = xCurrency.name();
+                            break;
+                    }
+                    builder.addLoreLine(
+                            BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-not-enough")
+                                    .replace("%currency%", currencyName));
+                }
             }
         }
 
@@ -627,7 +657,32 @@ public class ShopGUI extends BaseGUI {
             amount = amount * quantityMultiplier;
         }
 
-        if (currencyMat != null && me.horiciastko.bedwars.utils.InventoryUtils.hasEnough(player, currencyMat, cost)) {
+        me.horiciastko.bedwars.models.Arena currentArena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
+        boolean isExpMode = (currentArena != null && currentArena.isExpMode());
+        int expCost = 0;
+        boolean useExpCurrency = false;
+
+        if (isExpMode && xCurrency != XMaterial.DIAMOND) {
+            useExpCurrency = true;
+            if (xCurrency == XMaterial.IRON_INGOT) {
+                expCost = cost * 1;
+            } else if (xCurrency == XMaterial.GOLD_INGOT) {
+                expCost = cost * 4;
+            } else if (xCurrency == XMaterial.EMERALD) {
+                expCost = cost * 20;
+            } else {
+                expCost = cost * 1;
+            }
+        }
+
+        boolean canAfford = false;
+        if (useExpCurrency) {
+            canAfford = (player.getLevel() >= expCost);
+        } else {
+            canAfford = (currencyMat != null && me.horiciastko.bedwars.utils.InventoryUtils.hasEnough(player, currencyMat, cost));
+        }
+
+        if (canAfford) {
             ItemStack rawGiving = xMat.parseItem();
             if (rawGiving == null)
                 rawGiving = new ItemStack(Material.BARRIER);
@@ -747,7 +802,11 @@ public class ShopGUI extends BaseGUI {
                 return;
             }
 
-            me.horiciastko.bedwars.utils.InventoryUtils.removeItems(player, currencyMat, cost);
+            if (useExpCurrency) {
+                player.setLevel(Math.max(0, player.getLevel() - expCost));
+            } else {
+                me.horiciastko.bedwars.utils.InventoryUtils.removeItems(player, currencyMat, cost);
+            }
 
             if (giving.getType() != Material.AIR) {
                 if (itemData.getName().equals("tower")) {
@@ -796,19 +855,26 @@ public class ShopGUI extends BaseGUI {
             String errorMsg = BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(),
                     "shop-not-enough");
             String currencyName;
-            switch (xCurrency) {
-                case IRON_INGOT:
-                    currencyName = "Iron";
-                    break;
-                case GOLD_INGOT:
-                    currencyName = "Gold";
-                    break;
-                case EMERALD:
-                    currencyName = "Emerald";
-                    break;
-                default:
-                    currencyName = xCurrency.name();
-                    break;
+            if (useExpCurrency) {
+                currencyName = "级经验";
+            } else {
+                switch (xCurrency) {
+                    case IRON_INGOT:
+                        currencyName = "Iron";
+                        break;
+                    case GOLD_INGOT:
+                        currencyName = "Gold";
+                        break;
+                    case EMERALD:
+                        currencyName = "Emerald";
+                        break;
+                    case DIAMOND:
+                        currencyName = "Diamond";
+                        break;
+                    default:
+                        currencyName = xCurrency.name();
+                        break;
+                }
             }
             player.sendMessage(errorMsg.replace("%currency%", currencyName));
             BedWars.getInstance().getSoundManager().playSound(player, "shop-insufficient-money");

@@ -13,7 +13,7 @@ public class TeamListGUI extends BaseGUI {
     private final Arena arena;
 
     public TeamListGUI(Arena arena) {
-        super("§8Manage Teams", 6);
+        super("§8管理队伍列表", 6);
         this.arena = arena;
     }
 
@@ -29,12 +29,12 @@ public class TeamListGUI extends BaseGUI {
             ItemStack teamItem = new ItemBuilder(team.getMaterial())
                     .setName(team.getColor() + team.getDisplayName())
                     .setLore(
-                            "§7Color: " + team.getColor().name(),
-                            "§7Spawn: " + (team.getSpawnLocation() != null ? "§aSet" : "§cNot Set"),
-                            "§7Bed: " + (team.getBedLocation() != null ? "§aSet" : "§cNot Set"),
+                            "§7队伍颜色: " + team.getColor().name(),
+                            "§7出生点: " + (team.getSpawnLocation() != null ? "§a已设置" : "§c未设置"),
+                            "§7床坐标: " + (team.getBedLocation() != null ? "§a已设置" : "§c未设置"),
                             "",
-                            "§eLeft-Click to Edit",
-                            "§cRight-Click to Delete")
+                            "§e左键点击编辑该队伍",
+                            "§c右键点击删除该队伍")
                     .build();
 
             if (teamItem.getItemMeta() != null) {
@@ -44,11 +44,11 @@ public class TeamListGUI extends BaseGUI {
         }
 
         inventory.setItem(53, new ItemBuilder(Material.EMERALD)
-                .setName("§aAdd New Team")
-                .setLore("§7Click to create a new team")
+                .setName("§a添加新队伍")
+                .setLore("§7点击创建一支新队伍")
                 .build());
 
-        inventory.setItem(45, new ItemBuilder(Material.ARROW).setName("§cBack").build());
+        inventory.setItem(45, new ItemBuilder(Material.ARROW).setName("§c返回上一级").build());
     }
 
     @Override

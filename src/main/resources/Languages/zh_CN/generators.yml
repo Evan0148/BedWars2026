@@ -1,0 +1,193 @@
+############################################################
+#                                                          #
+#                 BedWars 资源刷新点配置                     #
+#                                                          #
+############################################################
+
+# --- 全局生成点设置 (钻石 / 绿宝石) ---
+global_generators:
+  diamond:
+    name: "&b&l钻石"
+    item: DIAMOND
+    block: DIAMOND_BLOCK
+  emerald:
+    name: "&2&l绿宝石"
+    item: EMERALD
+    block: EMERALD_BLOCK
+
+# --- 队伍生成点设置 (铁 / 金) ---
+team_generators:
+  Default:
+    levels:
+      0:
+        iron: { item: IRON_INGOT, delay: 1.0, limit: 128 }
+        gold: { item: GOLD_INGOT, delay: 4.0, limit: 32 }
+      1:
+        iron: { item: IRON_INGOT, delay: 0.66, limit: 160 }
+        gold: { item: GOLD_INGOT, delay: 2.66, limit: 64 }
+      2:
+        iron: { item: IRON_INGOT, delay: 0.50, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 2.00, limit: 96 }
+      3:
+        iron: { item: IRON_INGOT, delay: 0.50, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 2.00, limit: 96 }
+        emerald: { item: EMERALD, delay: 10.0, limit: 4 }
+      4:
+        iron: { item: IRON_INGOT, delay: 0.33, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.33, limit: 96 }
+        emerald: { item: EMERALD, delay: 10.0, limit: 8 }
+
+  Solo:
+    levels:
+      0:
+        iron: { item: IRON_INGOT, delay: 1.0, limit: 128 }
+        gold: { item: GOLD_INGOT, delay: 4.0, limit: 32 }
+      1:
+        iron: { item: IRON_INGOT, delay: 0.66, limit: 160 }
+        gold: { item: GOLD_INGOT, delay: 2.66, limit: 64 }
+      2:
+        iron: { item: IRON_INGOT, delay: 0.50, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 2.00, limit: 96 }
+      3:
+        iron: { item: IRON_INGOT, delay: 0.50, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 2.00, limit: 96 }
+        emerald: { item: EMERALD, delay: 10.0, limit: 4 }
+      4:
+        iron: { item: IRON_INGOT, delay: 0.33, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.33, limit: 96 }
+        emerald: { item: EMERALD, delay: 10.0, limit: 8 }
+
+  Doubles: # 双倍速度
+    levels:
+      0:
+        iron: { item: IRON_INGOT, delay: 0.5, limit: 128 }
+        gold: { item: GOLD_INGOT, delay: 2.0, limit: 32 }
+      1:
+        iron: { item: IRON_INGOT, delay: 0.33, limit: 160 }
+        gold: { item: GOLD_INGOT, delay: 1.33, limit: 64 }
+      2:
+        iron: { item: IRON_INGOT, delay: 0.25, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.0, limit: 96 }
+      3:
+        iron: { item: IRON_INGOT, delay: 0.25, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.0, limit: 96 }
+        emerald: { item: EMERALD, delay: 5.0, limit: 4 }
+      4:
+        iron: { item: IRON_INGOT, delay: 0.16, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 0.66, limit: 96 }
+        emerald: { item: EMERALD, delay: 5.0, limit: 8 }
+
+  3v3v3v3: # 双倍速度
+    levels:
+      0:
+        iron: { item: IRON_INGOT, delay: 0.5, limit: 128 }
+        gold: { item: GOLD_INGOT, delay: 2.0, limit: 32 }
+      1:
+        iron: { item: IRON_INGOT, delay: 0.33, limit: 160 }
+        gold: { item: GOLD_INGOT, delay: 1.33, limit: 64 }
+      2:
+        iron: { item: IRON_INGOT, delay: 0.25, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.0, limit: 96 }
+      3:
+        iron: { item: IRON_INGOT, delay: 0.25, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.0, limit: 96 }
+        emerald: { item: EMERALD, delay: 5.0, limit: 4 }
+      4:
+        iron: { item: IRON_INGOT, delay: 0.16, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 0.66, limit: 96 }
+        emerald: { item: EMERALD, delay: 5.0, limit: 8 }
+
+  4v4v4v4: # 双倍速度
+    levels:
+      0:
+        iron: { item: IRON_INGOT, delay: 0.5, limit: 128 }
+        gold: { item: GOLD_INGOT, delay: 2.0, limit: 32 }
+      1:
+        iron: { item: IRON_INGOT, delay: 0.33, limit: 160 }
+        gold: { item: GOLD_INGOT, delay: 1.33, limit: 64 }
+      2:
+        iron: { item: IRON_INGOT, delay: 0.25, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.0, limit: 96 }
+      3:
+        iron: { item: IRON_INGOT, delay: 0.25, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 1.0, limit: 96 }
+        emerald: { item: EMERALD, delay: 5.0, limit: 4 }
+      4:
+        iron: { item: IRON_INGOT, delay: 0.16, limit: 192 }
+        gold: { item: GOLD_INGOT, delay: 0.66, limit: 96 }
+        emerald: { item: EMERALD, delay: 5.0, limit: 8 }
+
+# --- 默认事件时间线 ---
+events:
+  - id: "diamond_2"
+    name: "Diamond II"
+    duration: 360
+  - id: "emerald_2"
+    name: "Emerald II"
+    duration: 360
+  - id: "diamond_3"
+    name: "Diamond III"
+    duration: 360
+  - id: "emerald_3"
+    name: "Emerald III"
+    duration: 360
+  - id: "bed_gone"
+    name: "Beds Gone"
+    duration: 360
+  - id: "sudden_death"
+    name: "Sudden Death"
+    duration: 360
+  - id: "game_end"
+    name: "Game End"
+    duration: 360
+
+# --- 模式专属设置 (仅全局生成点) ---
+Default:
+  diamond:
+    tierI: { delay: 30, spawn-limit: 4 }
+    tierII: { delay: 15, spawn-limit: 6 }
+    tierIII: { delay: 10, spawn-limit: 8 }
+  emerald:
+    tierI: { delay: 60, spawn-limit: 2 }
+    tierII: { delay: 45, spawn-limit: 4 }
+    tierIII: { delay: 30, spawn-limit: 6 }
+
+Solo:
+  diamond:
+    tierI: { delay: 30, spawn-limit: 4 }
+    tierII: { delay: 15, spawn-limit: 6 }
+    tierIII: { delay: 10, spawn-limit: 8 }
+  emerald:
+    tierI: { delay: 60, spawn-limit: 2 }
+    tierII: { delay: 45, spawn-limit: 3 }
+    tierIII: { delay: 30, spawn-limit: 4 }
+
+Doubles:
+  diamond:
+    tierI: { delay: 30, spawn-limit: 4 }
+    tierII: { delay: 15, spawn-limit: 6 }
+    tierIII: { delay: 10, spawn-limit: 8 }
+  emerald:
+    tierI: { delay: 60, spawn-limit: 2 }
+    tierII: { delay: 45, spawn-limit: 3 }
+    tierIII: { delay: 30, spawn-limit: 4 }
+
+3v3v3v3:
+  diamond:
+    tierI: { delay: 30, spawn-limit: 5 }
+    tierII: { delay: 15, spawn-limit: 7 }
+    tierIII: { delay: 10, spawn-limit: 9 }
+  emerald:
+    tierI: { delay: 60, spawn-limit: 2 }
+    tierII: { delay: 45, spawn-limit: 3 }
+    tierIII: { delay: 30, spawn-limit: 4 }
+
+4v4v4v4:
+  diamond:
+    tierI: { delay: 30, spawn-limit: 6 }
+    tierII: { delay: 15, spawn-limit: 8 }
+    tierIII: { delay: 10, spawn-limit: 10 }
+  emerald:
+    tierI: { delay: 60, spawn-limit: 2 }
+    tierII: { delay: 45, spawn-limit: 3 }
+    tierIII: { delay: 30, spawn-limit: 4 }

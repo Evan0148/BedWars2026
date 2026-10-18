@@ -13,7 +13,7 @@ public class ShopManagementGUI extends BaseGUI {
     private final Arena arena;
 
     public ShopManagementGUI(Arena arena) {
-        super("§8Step 5: Shop Villagers", 3);
+        super("§8商店与升级村民配置: " + arena.getName(), 3);
         this.arena = arena;
     }
 
@@ -27,34 +27,34 @@ public class ShopManagementGUI extends BaseGUI {
     @Override
     public void setContents(Player player) {
         inventory.setItem(10, new ItemBuilder(Material.VILLAGER_SPAWN_EGG)
-                .setName("§a§lAuto SHOP NPC")
+                .setName("§a§l自动绑定 道具商店 NPC")
                 .setLore(
-                        "§7Automatically sets §aSHOP §7NPC",
-                        "§7for the closest team base.",
+                        "§7自动为距离你最近的队伍基地",
+                        "§7设置 §a道具商店 §7NPC 坐标。",
                         "",
-                        "§eClick to set at your position")
+                        "§e点击将当前位置设为最近队伍的商店")
                 .build());
 
         inventory.setItem(12, new ItemBuilder(Material.EXPERIENCE_BOTTLE)
-                .setName("§b§lAuto UPGRADE NPC")
+                .setName("§b§l自动绑定 团队升级 NPC")
                 .setLore(
-                        "§7Automatically sets §bUPGRADE §7NPC",
-                        "§7for the closest team base.",
+                        "§7自动为距离你最近的队伍基地",
+                        "§7设置 §b团队升级 §7NPC 坐标。",
                         "",
-                        "§eClick to set at your position")
+                        "§e点击将当前位置设为最近队伍的升级")
                 .build());
 
         inventory.setItem(14, new ItemBuilder(Material.CHEST)
-                .setName("§e§lManual Selection")
+                .setName("§e§l手动选择队伍设置")
                 .setLore(
-                        "§7Manually pick a team to set",
-                        "§7their shop/upgrade NPC location.",
+                        "§7手动选择指定队伍以精确设置",
+                        "§7其商店/升级 NPC 的生成位置。",
                         "",
-                        "§eClick to pick team and set")
+                        "§e点击选择队伍")
                 .build());
 
         inventory.setItem(22, new ItemBuilder(Material.ARROW)
-                .setName("§7Go Back")
+                .setName("§7返回上一级")
                 .build());
 
         for (int i = 0; i < inventory.getSize(); i++) {

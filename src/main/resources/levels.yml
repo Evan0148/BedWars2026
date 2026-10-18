@@ -54,20 +54,20 @@ manual-levels:
   100: 150000
 
 ranks:
-  1: "&7Beginner"
-  5: "&fNovice"
-  10: "&a&lIntermediate"
-  15: "&2&lSkilled"
-  20: "&e&lProficient"
-  25: "&b&lAdvanced"
-  30: "&9&lExpert"
-  40: "&3&lMaster"
-  50: "&5&lElite"
-  60: "&d&lChampion"
-  75: "&c&lLegend"
-  100: "&6&lMythic"
-  150: "&4&lGod"
-  200: "&c&l&kX&r &4&lDEMIGOD &c&l&kX"
+  1: "&7新手"
+  5: "&f见习生"
+  10: "&a&l中级战士"
+  15: "&2&l熟练老手"
+  20: "&e&l精通者"
+  25: "&b&l高阶军士"
+  30: "&9&l专家"
+  40: "&3&l大师"
+  50: "&5&l精英"
+  60: "&d&l冠军"
+  75: "&c&l传奇"
+  100: "&6&l神话"
+  150: "&4&l天神"
+  200: "&c&l&kX&r &4&l半神至尊 &c&l&kX"
 prestige:
   enabled: false
   max-prestige: 10
