@@ -77,9 +77,9 @@ game:
     team-damage-amount: 1.0 # Damage dealt to teammates (only when prevent-team-explosion-damage is false)
     timer-enabled: true
   fireball:
-    jump-power: 2.0
-    horizontal-power: 1.8 # 水平推力 (远) - 建议 1.5 - 2.2
-    vertical-power: 0.55  # 垂直弹跳 (高) - 建议 0.45 - 0.65，防止直冲云霄
+    jump-power: 2.5
+    horizontal-power: 2.6 # 水平推力 (远) - 经典 BedWars 抛物线推进 (建议 2.4 - 3.0)
+    vertical-power: 0.72  # 垂直高度 (高) - 产生足够滞空时间带出远距离位移 (建议 0.65 - 0.8)
     damage-enabled: true
     damage-amount: 4.0
     team-damage-amount: 2.0 # Damage dealt to teammates (only when prevent-team-explosion-damage is false)

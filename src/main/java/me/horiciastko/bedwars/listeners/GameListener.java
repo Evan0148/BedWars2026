@@ -1584,37 +1584,46 @@ public class GameListener implements Listener {
                     }
                 }
 
-                double horizontalPower = BedWars.getInstance().getConfig().getDouble("game.fireball.horizontal-power", 1.8);
-                double verticalPower = BedWars.getInstance().getConfig().getDouble("game.fireball.vertical-power", 0.55);
+                double horizontalPower = BedWars.getInstance().getConfig().getDouble("game.fireball.horizontal-power", 2.6);
+                double verticalPower = BedWars.getInstance().getConfig().getDouble("game.fireball.vertical-power", 0.72);
 
                 boolean isTnt = edbe.getDamager() instanceof org.bukkit.entity.TNTPrimed;
                 if (isTnt) {
-                    horizontalPower = BedWars.getInstance().getConfig().getDouble("game.tnt.horizontal-power", 2.0);
-                    verticalPower = BedWars.getInstance().getConfig().getDouble("game.tnt.vertical-power", 0.7);
+                    horizontalPower = BedWars.getInstance().getConfig().getDouble("game.tnt.horizontal-power", 2.8);
+                    verticalPower = BedWars.getInstance().getConfig().getDouble("game.tnt.vertical-power", 0.75);
                 }
 
                 org.bukkit.util.Vector diff = player.getLocation().toVector()
                         .subtract(edbe.getDamager().getLocation().toVector());
 
                 org.bukkit.util.Vector horiz = new org.bukkit.util.Vector(diff.getX(), 0, diff.getZ());
-                if (horiz.lengthSquared() > 0.0001) {
+                if (horiz.lengthSquared() > 0.04) {
                     horiz.normalize().multiply(horizontalPower);
                 } else {
-                    horiz = player.getLocation().getDirection().setY(0).normalize().multiply(horizontalPower);
+                    org.bukkit.util.Vector damagerVel = edbe.getDamager().getVelocity().clone().setY(0);
+                    if (damagerVel.lengthSquared() > 0.001) {
+                        horiz = damagerVel.normalize().multiply(horizontalPower);
+                    } else {
+                        horiz = player.getLocation().getDirection().setY(0).normalize().multiply(horizontalPower);
+                    }
                 }
 
                 org.bukkit.util.Vector currentVel = player.getVelocity();
-                double newY = Math.max(currentVel.getY(), 0) + verticalPower;
-                if (newY > 0.85) {
-                    newY = 0.85;
+                double horizX = horiz.getX();
+                double horizZ = horiz.getZ();
+                if ((currentVel.getX() > 0 && horizX > 0) || (currentVel.getX() < 0 && horizX < 0)) {
+                    horizX += currentVel.getX() * 0.5;
+                }
+                if ((currentVel.getZ() > 0 && horizZ > 0) || (currentVel.getZ() < 0 && horizZ < 0)) {
+                    horizZ += currentVel.getZ() * 0.5;
                 }
 
-                org.bukkit.util.Vector finalVelocity = new org.bukkit.util.Vector(
-                        (currentVel.getX() * 0.4) + horiz.getX(),
-                        newY,
-                        (currentVel.getZ() * 0.4) + horiz.getZ()
-                );
+                double newY = Math.max(currentVel.getY(), 0) + verticalPower;
+                if (newY > 0.95) {
+                    newY = 0.95;
+                }
 
+                org.bukkit.util.Vector finalVelocity = new org.bukkit.util.Vector(horizX, newY, horizZ);
                 player.setVelocity(finalVelocity);
             }
         }
