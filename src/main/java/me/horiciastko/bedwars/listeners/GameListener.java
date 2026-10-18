@@ -129,6 +129,16 @@ public class GameListener implements Listener {
                 }
             }
 
+            // Map blocks such as unstripped/stripped logs, wood, stems, hyphae can never be broken
+            if (blockName.endsWith("_LOG") || blockName.endsWith("_WOOD")
+                    || blockName.endsWith("_STEM") || blockName.endsWith("_HYPHAE")) {
+                event.setCancelled(true);
+                String msg = BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(),
+                        "interact-cant-break");
+                player.sendMessage(msg);
+                return;
+            }
+
             if (arena.isBlockPlaced(block)) {
                 arena.removePlacedBlock(block);
                 // Sponge/wet_sponge: suppress the default drop (which would be wet_sponge) and
@@ -422,6 +432,20 @@ public class GameListener implements Listener {
             if (BedWars.getInstance().getGameManager().isInBuildMode(player) || player.hasPermission("bedwars.admin")) {
                 return;
             }
+            event.setCancelled(true);
+            return;
+        }
+
+        // Block tool transformations on map blocks (e.g. axe stripping logs, shovel making paths, hoe tilling)
+        String placedType = event.getBlock().getType().name();
+        ItemStack handItem = event.getItemInHand();
+        String handName = (handItem != null) ? handItem.getType().name() : "";
+        boolean isTool = handName.endsWith("_AXE") || handName.endsWith("_SHOVEL") || handName.endsWith("_HOE");
+        boolean isTransformType = placedType.contains("STRIPPED_")
+                || placedType.contains("PATH")
+                || placedType.equals("FARMLAND");
+
+        if (isTool || isTransformType) {
             event.setCancelled(true);
             return;
         }
@@ -1084,6 +1108,38 @@ public class GameListener implements Listener {
 
         if (arena == null || arena.getState() != Arena.GameState.IN_GAME)
             return;
+
+        // Block right-click tool mutations on map blocks (axe stripping logs in main or off-hand, shovel pathing, hoe tilling)
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
+            ItemStack mainItem = player.getInventory().getItemInMainHand();
+            ItemStack offItem = player.getInventory().getItemInOffHand();
+            boolean hasAxe = (mainItem != null && mainItem.getType().name().endsWith("_AXE"))
+                    || (offItem != null && offItem.getType().name().endsWith("_AXE"));
+            boolean hasShovel = (mainItem != null && mainItem.getType().name().endsWith("_SHOVEL"))
+                    || (offItem != null && offItem.getType().name().endsWith("_SHOVEL"));
+            boolean hasHoe = (mainItem != null && mainItem.getType().name().endsWith("_HOE"))
+                    || (offItem != null && offItem.getType().name().endsWith("_HOE"));
+
+            String bName = event.getClickedBlock().getType().name();
+            boolean isStrippable = bName.endsWith("_LOG") || bName.endsWith("_WOOD")
+                    || bName.endsWith("_STEM") || bName.endsWith("_HYPHAE");
+            boolean isPathableOrTillable = bName.equals("GRASS_BLOCK") || bName.equals("DIRT")
+                    || bName.equals("COARSE_DIRT") || bName.equals("ROOTED_DIRT");
+            boolean isCopper = bName.contains("COPPER");
+
+            if ((hasAxe && (isStrippable || isCopper))
+                    || (hasShovel && isPathableOrTillable)
+                    || (hasHoe && isPathableOrTillable)) {
+                if (!arena.isBlockPlaced(event.getClickedBlock())) {
+                    event.setCancelled(true);
+                    try {
+                        event.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
+                        event.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
+                    } catch (NoSuchMethodError ignored) {}
+                    return;
+                }
+            }
+        }
 
         // Feature 1: Left-click Ender Chest to quickly store held item
         if (event.getAction() == Action.LEFT_CLICK_BLOCK
@@ -1904,6 +1960,17 @@ public class GameListener implements Listener {
                 || (event.getEntity() != null && event.getEntity().getScoreboardTags().contains("bw_mob"))) {
             event.setCancelled(true);
             return;
+        }
+
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
+            if (arena != null && arena.getState() == Arena.GameState.IN_GAME) {
+                if (!arena.isBlockPlaced(event.getBlock())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
 
         if (event.getEntity() instanceof EnderDragon || event.getEntityType() == EntityType.ENDER_DRAGON) {
