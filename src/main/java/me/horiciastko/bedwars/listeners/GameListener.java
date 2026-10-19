@@ -236,6 +236,8 @@ public class GameListener implements Listener {
 
             victimTeam.setBedBroken(true);
 
+            org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsBedBreakEvent(arena, victimTeam, player));
+
             String attackerColor = (attackerTeam != null && attackerTeam.getColor() != null ? attackerTeam.getColor().toString() : "§f");
 
             String bedMsg = BedWars.getInstance().getLanguageManager().getMessage(null, "interact-bed-destroy-chat");

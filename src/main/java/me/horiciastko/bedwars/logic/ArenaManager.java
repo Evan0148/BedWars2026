@@ -592,6 +592,7 @@ public class ArenaManager {
             setLastArena(player.getUniqueId(), arena.getName());
             plugin.getGameManager().resetPlayerPermanentPurchases(player.getUniqueId());
             arena.getPlayers().remove(player);
+            org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsPlayerLeaveArenaEvent(player, arena));
             plugin.getGameManager().checkLobbyLogistics(arena);
 
             for (Team team : arena.getTeams()) {
@@ -692,6 +693,7 @@ public class ArenaManager {
         if (!arena.getPlayers().contains(player)) {
             arena.getPlayers().add(player);
             setPlayerArena(player, arena);
+            org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsPlayerJoinArenaEvent(player, arena));
             plugin.getSignManager().updateSigns(arena);
             plugin.getGameManager().setBuildMode(player, false);
 

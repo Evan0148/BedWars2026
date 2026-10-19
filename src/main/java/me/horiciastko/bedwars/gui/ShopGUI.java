@@ -877,6 +877,7 @@ public class ShopGUI extends BaseGUI {
 
             // Apply display name before canFit so isSimilar correctly matches already-held stacks
             if (giving.getType() != Material.AIR) {
+                org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsShopPurchaseEvent(player, currentArena, giving));
                 applyInventoryPresentation(giving, inventoryName);
             }
 

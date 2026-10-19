@@ -409,6 +409,8 @@ public class GameManager {
         }
 
         plugin.getSignManager().updateSigns(arena);
+
+        org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsGameStartEvent(arena));
     }
 
     private int resolveEventDurationSeconds(java.util.List<Map<?, ?>> events, int index, int fallbackSeconds) {
@@ -817,8 +819,15 @@ public class GameManager {
                 .replace("{KillerColor}", killerColor)
                 .replace("{KillerName}", killerPureName);
 
+        me.horiciastko.bedwars.api.events.BedWarsPlayerKillEvent killEvent =
+                new me.horiciastko.bedwars.api.events.BedWarsPlayerKillEvent(
+                        arena, player, team, killer, killer != null ? getPlayerTeam(arena, killer) : null,
+                        isFinal, reason, finalMsg);
+        org.bukkit.Bukkit.getPluginManager().callEvent(killEvent);
+
+        String broadcastMsg = killEvent.getCustomMessage() != null ? killEvent.getCustomMessage() : finalMsg;
         arena.getPlayers().forEach(p -> {
-            p.sendMessage(finalMsg);
+            p.sendMessage(broadcastMsg);
             plugin.getSoundManager().playSound(p, isFinal ? "bed-destroy" : "kill");
             plugin.getScoreboardManager().updateScoreboard(p);
         });
@@ -1913,6 +1922,8 @@ public class GameManager {
             return; // already ending, prevent duplicate calls
         }
         arena.setState(Arena.GameState.ENDING);
+
+        org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsGameEndEvent(arena, winner));
 
         String winnerText = (winner != null)
                 ? (winner.getColor() != null ? winner.getColor().toString() : "§f") + winner.getName()
