@@ -578,6 +578,9 @@ public class GameManager {
     }
 
     public Team getPlayerTeam(Arena arena, Player player) {
+        if (arena == null || player == null) {
+            return null;
+        }
         Map<UUID, Team> map = playerTeams.get(arena);
         return map != null ? map.get(player.getUniqueId()) : null;
     }
@@ -591,6 +594,9 @@ public class GameManager {
 
 
     public void cleanupArena(Arena arena) {
+        if (arena == null) {
+            return;
+        }
         // Capture team map BEFORE removing it — endGame calls leaveArena first which
         // empties arena.getPlayers(), so we must use the team map keyset for tier cleanup
         Map<UUID, Team> arenaPlayerTeams = playerTeams.remove(arena);

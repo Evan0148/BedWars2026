@@ -820,8 +820,7 @@ public class ShopGUI extends BaseGUI {
                 }
             }
 
-            Team team = BedWars.getInstance().getGameManager().getPlayerTeam(
-                    BedWars.getInstance().getArenaManager().getPlayerArena(player), player);
+            Team team = BedWars.getInstance().getGameManager().getPlayerTeam(currentArena, player);
 
             if (team != null) {
                 String teamColorName = team.getColor().name();

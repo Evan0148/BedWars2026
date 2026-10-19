@@ -423,10 +423,26 @@ public class ArenaManager {
     }
 
     public Arena getPlayerArena(Player player) {
-        return playerArenaCache.get(player);
+        if (player == null) {
+            return null;
+        }
+        Arena cached = playerArenaCache.get(player);
+        if (cached != null) {
+            return cached;
+        }
+        for (Arena arena : arenas) {
+            if (arena.getPlayers().contains(player)) {
+                playerArenaCache.put(player, arena);
+                return arena;
+            }
+        }
+        return null;
     }
 
     public void setPlayerArena(Player player, Arena arena) {
+        if (player == null) {
+            return;
+        }
         if (arena == null) {
             playerArenaCache.remove(player);
         } else {
