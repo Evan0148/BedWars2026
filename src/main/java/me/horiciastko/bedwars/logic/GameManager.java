@@ -33,6 +33,7 @@ public class GameManager {
     private final java.util.Set<UUID> buildMode = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Map<UUID, Long> expWindowStart = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> expWindowTotal = new ConcurrentHashMap<>();
+    private final Map<UUID, Team> preSelectedTeams = new ConcurrentHashMap<>();
     private final Map<Arena, Map<UUID, SessionStats>> sessionStats = new ConcurrentHashMap<>();
 
     public static class SessionStats {
@@ -524,7 +525,19 @@ public class GameManager {
             java.util.Collections.shuffle(randomizedTeams, random);
         }
 
-        List<List<Player>> groups = plugin.getPartyManager().buildAssignmentGroups(shuffledPlayers, playersPerTeam);
+        // Assign players who pre-selected a team first
+        List<Player> unassignedPlayers = new ArrayList<>();
+        for (Player player : shuffledPlayers) {
+            Team selected = preSelectedTeams.get(player.getUniqueId());
+            if (selected != null && arena.getTeams().contains(selected) && selected.getMembers().size() < playersPerTeam) {
+                selected.getMembers().add(player);
+                teamsMap.put(player.getUniqueId(), selected);
+            } else {
+                unassignedPlayers.add(player);
+            }
+        }
+
+        List<List<Player>> groups = plugin.getPartyManager().buildAssignmentGroups(unassignedPlayers, playersPerTeam);
         groups.sort((a, b) -> Integer.compare(b.size(), a.size()));
 
         for (List<Player> group : groups) {
@@ -551,6 +564,10 @@ public class GameManager {
         }
 
         playerTeams.put(arena, teamsMap);
+
+        for (Player player : arena.getPlayers()) {
+            preSelectedTeams.remove(player.getUniqueId());
+        }
     }
 
     private Team findLeastFilledTeam(List<Team> teams, int neededSlots, int playersPerTeam, java.util.Random random) {
@@ -612,6 +629,7 @@ public class GameManager {
                 playerHasShears.remove(uuid);
                 expWindowStart.remove(uuid);
                 expWindowTotal.remove(uuid);
+                preSelectedTeams.remove(uuid);
             }
         }
         // Also clean up any lobby-only players (waiting state, no team assigned)
@@ -623,6 +641,7 @@ public class GameManager {
                 playerHasShears.remove(p.getUniqueId());
                 expWindowStart.remove(p.getUniqueId());
                 expWindowTotal.remove(p.getUniqueId());
+                preSelectedTeams.remove(p.getUniqueId());
             }
         }
         plugin.getVisualizationManager().removeGameHolograms(arena);
@@ -743,7 +762,11 @@ public class GameManager {
                 if (victimLevels > 0) {
                     addExpModeLevels(killer, victimLevels);
                     killer.playSound(killer.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.2f);
-                    killer.sendMessage("§e你从 §f" + victim.getName() + " §e身上夺取了 §a" + victimLevels + " §e级经验！");
+                    String stolenMsg = plugin.getLanguageManager().getMessage(killer.getUniqueId(), "player-stolen-exp");
+                    if (stolenMsg == null || stolenMsg.startsWith("§cMissing path:")) {
+                        stolenMsg = "§e你从 §f%player% §e身上夺取了 §a%amount% §e级经验！";
+                    }
+                    killer.sendMessage(stolenMsg.replace("%player%", victim.getName()).replace("%amount%", String.valueOf(victimLevels)));
                 }
             }
             List<org.bukkit.Material> resources = java.util.Arrays.asList(org.bukkit.Material.IRON_INGOT,
@@ -1638,6 +1661,42 @@ public class GameManager {
             msg = msg.replace("%amount%", String.valueOf(total));
         }
         plugin.sendActionBar(player, msg);
+    }
+
+    public Team getPreSelectedTeam(Player player) {
+        if (player == null) return null;
+        return preSelectedTeams.get(player.getUniqueId());
+    }
+
+    public void setPreSelectedTeam(Player player, Team team) {
+        if (player == null) return;
+        if (team == null) {
+            preSelectedTeams.remove(player.getUniqueId());
+        } else {
+            preSelectedTeams.put(player.getUniqueId(), team);
+        }
+    }
+
+    public int getPreSelectedCount(Arena arena, Team team) {
+        if (arena == null || team == null) return 0;
+        int count = 0;
+        for (Player p : arena.getPlayers()) {
+            if (p != null && team.equals(preSelectedTeams.get(p.getUniqueId()))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public List<Player> getPreSelectedMembers(Arena arena, Team team) {
+        List<Player> members = new ArrayList<>();
+        if (arena == null || team == null) return members;
+        for (Player p : arena.getPlayers()) {
+            if (p != null && team.equals(preSelectedTeams.get(p.getUniqueId()))) {
+                members.add(p);
+            }
+        }
+        return members;
     }
 
     public void normalizeSwordInventory(Player player, Team team) {

@@ -17,12 +17,32 @@ public class LobbyItemListener implements Listener {
         }
 
         ItemStack item = event.getItem();
-        if (isLobbyItem(item)) {
+        if (item == null || !item.hasItemMeta()) {
+            return;
+        }
+
+        String special = me.horiciastko.bedwars.utils.ItemTagUtils.getTag(item, "special_item");
+        if ("lobby_leave".equals(special)) {
             Player player = event.getPlayer();
             if (BedWars.getInstance().getArenaManager().getPlayerArena(player) != null) {
                 BedWars.getInstance().getArenaManager().leaveArena(player);
                 event.setCancelled(true);
             }
+        } else if ("lobby_team_select".equals(special)) {
+            Player player = event.getPlayer();
+            me.horiciastko.bedwars.models.Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
+            if (arena != null && (arena.getState() == me.horiciastko.bedwars.models.Arena.GameState.WAITING ||
+                    arena.getState() == me.horiciastko.bedwars.models.Arena.GameState.STARTING)) {
+                new me.horiciastko.bedwars.gui.TeamSelectGUI(arena).open(player);
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(org.bukkit.event.block.BlockPlaceEvent event) {
+        if (isLobbyItem(event.getItemInHand())) {
+            event.setCancelled(true);
         }
     }
 
@@ -54,6 +74,6 @@ public class LobbyItemListener implements Listener {
             return false;
         }
         String special = me.horiciastko.bedwars.utils.ItemTagUtils.getTag(item, "special_item");
-        return "lobby_leave".equals(special);
+        return "lobby_leave".equals(special) || "lobby_team_select".equals(special);
     }
 }

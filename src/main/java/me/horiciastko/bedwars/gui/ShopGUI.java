@@ -274,7 +274,11 @@ public class ShopGUI extends BaseGUI {
             String costColor;
 
             if (useExpCurrency) {
-                currencyName = "级经验";
+                String expUnit = BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "currency-exp-levels");
+                if (expUnit == null || expUnit.startsWith("§cMissing path:")) {
+                    expUnit = "级经验";
+                }
+                currencyName = expUnit;
                 costColor = "§a";
                 builder.addLoreLine(
                         BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "shop-cost")
@@ -282,25 +286,29 @@ public class ShopGUI extends BaseGUI {
                                 .replace("%currency%", currencyName));
                 builder.addLoreLine("");
             } else {
+                Material currencyMat = xCurrency.parseMaterial();
+                String localizedName = (currencyMat != null) ?
+                        BedWars.getInstance().getLanguageManager().getItemName(player.getUniqueId(), currencyMat) : null;
+
                 switch (xCurrency) {
                     case IRON_INGOT:
-                        currencyName = "Iron";
+                        currencyName = (localizedName != null) ? localizedName : "铁锭";
                         costColor = "§f";
                         break;
                     case GOLD_INGOT:
-                        currencyName = "Gold";
+                        currencyName = (localizedName != null) ? localizedName : "金锭";
                         costColor = "§6";
                         break;
                     case EMERALD:
-                        currencyName = "Emerald";
+                        currencyName = (localizedName != null) ? localizedName : "绿宝石";
                         costColor = "§2";
                         break;
                     case DIAMOND:
-                        currencyName = "Diamond";
+                        currencyName = (localizedName != null) ? localizedName : "钻石";
                         costColor = "§b";
                         break;
                     default:
-                        currencyName = xCurrency.name();
+                        currencyName = (localizedName != null) ? localizedName : xCurrency.name();
                         costColor = "§7";
                         break;
                 }

@@ -591,6 +591,7 @@ public class ArenaManager {
         if (arena != null) {
             setLastArena(player.getUniqueId(), arena.getName());
             plugin.getGameManager().resetPlayerPermanentPurchases(player.getUniqueId());
+            plugin.getGameManager().setPreSelectedTeam(player, null);
             arena.getPlayers().remove(player);
             org.bukkit.Bukkit.getPluginManager().callEvent(new me.horiciastko.bedwars.api.events.BedWarsPlayerLeaveArenaEvent(player, arena));
             plugin.getGameManager().checkLobbyLogistics(arena);
@@ -700,22 +701,60 @@ public class ArenaManager {
             player.setGameMode(org.bukkit.GameMode.ADVENTURE);
             plugin.getGameManager().applyPvpSettings(player, arena);
 
-            player.getInventory().clear();
-            player.getInventory().setArmorContents(null);
-            org.bukkit.inventory.ItemStack leaveItem = com.cryptomorin.xseries.XMaterial.RED_BED.parseItem();
-            if (leaveItem == null)
-                leaveItem = new org.bukkit.inventory.ItemStack(org.bukkit.Material.BARRIER);
-            org.bukkit.inventory.meta.ItemMeta meta = leaveItem.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(plugin.getLanguageManager().getMessage(player.getUniqueId(), "lobby-leave-item"));
-                leaveItem.setItemMeta(meta);
-                me.horiciastko.bedwars.utils.ItemTagUtils.setTag(leaveItem, "special_item", "lobby_leave");
-            }
-            player.getInventory().setItem(8, leaveItem);
+            giveLobbyItems(player, arena);
 
             player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "arena-joined").replace("%arena%", arena.getName()));
             plugin.getGameManager().checkLobbyLogistics(arena);
         }
+    }
+
+    public void giveLobbyItems(Player player, Arena arena) {
+        if (player == null || arena == null) return;
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+        updateTeamSelectItem(player, arena);
+
+        org.bukkit.inventory.ItemStack leaveItem = com.cryptomorin.xseries.XMaterial.RED_BED.parseItem();
+        if (leaveItem == null)
+            leaveItem = new org.bukkit.inventory.ItemStack(org.bukkit.Material.BARRIER);
+        org.bukkit.inventory.meta.ItemMeta meta = leaveItem.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(plugin.getLanguageManager().getMessage(player.getUniqueId(), "lobby-leave-item"));
+            leaveItem.setItemMeta(meta);
+        }
+        me.horiciastko.bedwars.utils.ItemTagUtils.setTag(leaveItem, "special_item", "lobby_leave");
+        player.getInventory().setItem(8, leaveItem);
+        player.updateInventory();
+    }
+
+    public void updateTeamSelectItem(Player player, Arena arena) {
+        if (player == null || arena == null) return;
+        Team selected = plugin.getGameManager().getPreSelectedTeam(player);
+        com.cryptomorin.xseries.XMaterial bedMat = me.horiciastko.bedwars.gui.TeamSelectGUI.getTeamBed(selected);
+        org.bukkit.inventory.ItemStack item = bedMat.parseItem();
+        if (item == null) {
+            item = com.cryptomorin.xseries.XMaterial.WHITE_BED.parseItem();
+            if (item == null) {
+                item = new org.bukkit.inventory.ItemStack(org.bukkit.Material.WHITE_WOOL);
+            }
+        }
+        org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            String title = plugin.getLanguageManager().getMessage(player.getUniqueId(), "lobby-team-select-item");
+            if (title == null || title.startsWith("§cMissing path:")) {
+                title = "&a&l选择队伍 &7(右键点击)";
+            }
+            if (selected != null) {
+                meta.setDisplayName(org.bukkit.ChatColor.translateAlternateColorCodes('&',
+                        title + " " + selected.getColor() + "§l" + selected.getDisplayName()));
+            } else {
+                meta.setDisplayName(org.bukkit.ChatColor.translateAlternateColorCodes('&', title));
+            }
+            item.setItemMeta(meta);
+        }
+        me.horiciastko.bedwars.utils.ItemTagUtils.setTag(item, "special_item", "lobby_team_select");
+        player.getInventory().setItem(0, item);
+        player.updateInventory();
     }
 
     private boolean tryJoinParty(Player leader, Arena arena) {
@@ -734,7 +773,11 @@ public class ArenaManager {
         int neededSlots = partyMembers.size() - alreadyInArena;
         int freeSlots = arena.getMaxPlayers() - arena.getPlayers().size();
         if (neededSlots > freeSlots) {
-            leader.sendMessage("§cYour party does not fit in this arena (need " + neededSlots + " free slots).");
+            String fitMsg = plugin.getLanguageManager().getMessage(leader.getUniqueId(), "party-does-not-fit");
+            if (fitMsg == null || fitMsg.startsWith("§cMissing path:")) {
+                fitMsg = "§c你的队伍人数超出该房间剩余空位 (还需 %slots% 个空位)。";
+            }
+            leader.sendMessage(fitMsg.replace("%slots%", String.valueOf(neededSlots)));
             return true;
         }
 
@@ -751,7 +794,11 @@ public class ArenaManager {
             }
         }
 
-        leader.sendMessage("§aParty joined arena " + arena.getName() + ".");
+        String partyJoinedMsg = plugin.getLanguageManager().getMessage(leader.getUniqueId(), "party-joined-arena");
+        if (partyJoinedMsg == null || partyJoinedMsg.startsWith("§cMissing path:")) {
+            partyJoinedMsg = "§a队伍已加入房间 %arena%。";
+        }
+        leader.sendMessage(partyJoinedMsg.replace("%arena%", arena.getName()));
         return true;
     }
 

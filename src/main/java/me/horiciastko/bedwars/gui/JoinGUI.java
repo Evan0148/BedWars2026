@@ -55,7 +55,9 @@ public class JoinGUI extends BaseGUI {
                     " ",
                     ChatColor.translateAlternateColorCodes('&',
                             plugin.getLanguageManager().getMessage(player.getUniqueId(), "config-join-lore-online") + " &f" + online),
-                        ChatColor.translateAlternateColorCodes('&', "&7Available Arenas: &f" + availableArenas),
+                    ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguageManager().getMessage(player.getUniqueId(), "config-join-lore-available-arenas")
+                                    .replace("%amount%", String.valueOf(availableArenas))),
                     " ",
                     ChatColor.translateAlternateColorCodes('&',
                             plugin.getLanguageManager().getMessage(player.getUniqueId(), "config-join-lore-quick-join")),
