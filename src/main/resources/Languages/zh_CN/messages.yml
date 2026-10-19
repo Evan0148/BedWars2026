@@ -61,6 +61,7 @@ player-die-fireball-final: "{PlayerColor}{PlayerName} &7被 {KillerColor}{Killer
 game-starting: "&e游戏将在 &c%seconds% &e秒后开始！"
 game-starting-cancelled: "&c玩家人数不足，倒计时已取消。"
 game-starting-actionbar: "&f游戏将在 &e%seconds%&f 秒后开始！"
+actionbar-exp-gained: "&a+%amount% 经验等级"
 game-started:
   - "&e&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   - " "

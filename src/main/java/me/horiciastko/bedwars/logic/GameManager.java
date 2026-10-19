@@ -31,6 +31,8 @@ public class GameManager {
     private final Map<UUID, String> playerArmorTiers = new ConcurrentHashMap<>();
     private final java.util.Set<UUID> playerHasShears = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final java.util.Set<UUID> buildMode = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Map<UUID, Long> expWindowStart = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> expWindowTotal = new ConcurrentHashMap<>();
     private final Map<Arena, Map<UUID, SessionStats>> sessionStats = new ConcurrentHashMap<>();
 
     public static class SessionStats {
@@ -606,6 +608,8 @@ public class GameManager {
                 playerAxeTiers.remove(uuid);
                 playerArmorTiers.remove(uuid);
                 playerHasShears.remove(uuid);
+                expWindowStart.remove(uuid);
+                expWindowTotal.remove(uuid);
             }
         }
         // Also clean up any lobby-only players (waiting state, no team assigned)
@@ -615,6 +619,8 @@ public class GameManager {
                 playerAxeTiers.remove(p.getUniqueId());
                 playerArmorTiers.remove(p.getUniqueId());
                 playerHasShears.remove(p.getUniqueId());
+                expWindowStart.remove(p.getUniqueId());
+                expWindowTotal.remove(p.getUniqueId());
             }
         }
         plugin.getVisualizationManager().removeGameHolograms(arena);
@@ -733,7 +739,7 @@ public class GameManager {
             if (arena.isExpMode()) {
                 int victimLevels = victim.getLevel();
                 if (victimLevels > 0) {
-                    killer.setLevel(killer.getLevel() + victimLevels);
+                    addExpModeLevels(killer, victimLevels);
                     killer.playSound(killer.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.2f);
                     killer.sendMessage("§e你从 §f" + victim.getName() + " §e身上夺取了 §a" + victimLevels + " §e级经验！");
                 }
@@ -757,6 +763,8 @@ public class GameManager {
             victim.setLevel(0);
             victim.setExp(0);
             victim.setTotalExperience(0);
+            expWindowStart.remove(victim.getUniqueId());
+            expWindowTotal.remove(victim.getUniqueId());
         }
 
         player.getInventory().clear();
@@ -1586,6 +1594,41 @@ public class GameManager {
         playerAxeTiers.remove(uuid);
         playerArmorTiers.remove(uuid);
         playerHasShears.remove(uuid);
+        expWindowStart.remove(uuid);
+        expWindowTotal.remove(uuid);
+    }
+
+    public void addExpModeLevels(Player player, int levels) {
+        if (player == null || !player.isOnline() || levels <= 0) {
+            return;
+        }
+        long current = player.getLevel();
+        long newLevel = current + levels;
+        if (newLevel > Integer.MAX_VALUE) {
+            newLevel = Integer.MAX_VALUE;
+        }
+        player.setLevel((int) newLevel);
+        player.setExp(0);
+
+        UUID uuid = player.getUniqueId();
+        long now = System.currentTimeMillis();
+        Long windowStart = expWindowStart.get(uuid);
+        int total;
+        if (windowStart == null || (now - windowStart) >= 3000L) {
+            expWindowStart.put(uuid, now);
+            total = levels;
+        } else {
+            total = expWindowTotal.getOrDefault(uuid, 0) + levels;
+        }
+        expWindowTotal.put(uuid, total);
+
+        String msg = plugin.getLanguageManager().getMessage(uuid, "actionbar-exp-gained");
+        if (msg == null || msg.startsWith("§cMissing path:")) {
+            msg = "§a+" + total + " 经验等级";
+        } else {
+            msg = msg.replace("%amount%", String.valueOf(total));
+        }
+        plugin.sendActionBar(player, msg);
     }
 
     public void normalizeSwordInventory(Player player, Team team) {

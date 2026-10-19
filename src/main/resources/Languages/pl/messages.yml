@@ -62,6 +62,7 @@ player-die-fireball-final: "{PlayerColor}{PlayerName} &7został spalony kulą og
 game-starting: "&eGra rozpoczyna się za &c%seconds% &esekund!"
 game-starting-cancelled: "&cOdliczanie anulowane! Niewystarczająca liczba graczy."
 game-starting-actionbar: "&fGra startuje za &e%seconds%&fs!"
+actionbar-exp-gained: "&a+%amount% Poziom(ów) Doświadczenia"
 game-started:
   - "&e&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   - " "

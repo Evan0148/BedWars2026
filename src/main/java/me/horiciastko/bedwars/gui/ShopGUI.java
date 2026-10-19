@@ -261,9 +261,9 @@ public class ShopGUI extends BaseGUI {
             if (xCurrency == XMaterial.IRON_INGOT) {
                 expCost = cost * 1;
             } else if (xCurrency == XMaterial.GOLD_INGOT) {
-                expCost = cost * 4;
+                expCost = cost * 10;
             } else if (xCurrency == XMaterial.EMERALD) {
-                expCost = cost * 20;
+                expCost = cost * 100;
             } else {
                 expCost = cost * 1;
             }
@@ -605,9 +605,9 @@ public class ShopGUI extends BaseGUI {
             if (xCurrency == XMaterial.IRON_INGOT) {
                 unitCost = costPerBatch * 1;
             } else if (xCurrency == XMaterial.GOLD_INGOT) {
-                unitCost = costPerBatch * 4;
+                unitCost = costPerBatch * 10;
             } else if (xCurrency == XMaterial.EMERALD) {
-                unitCost = costPerBatch * 20;
+                unitCost = costPerBatch * 100;
             } else {
                 unitCost = costPerBatch * 1;
             }
@@ -757,9 +757,9 @@ public class ShopGUI extends BaseGUI {
             if (xCurrency == XMaterial.IRON_INGOT) {
                 expCost = cost * 1;
             } else if (xCurrency == XMaterial.GOLD_INGOT) {
-                expCost = cost * 4;
+                expCost = cost * 10;
             } else if (xCurrency == XMaterial.EMERALD) {
-                expCost = cost * 20;
+                expCost = cost * 100;
             } else {
                 expCost = cost * 1;
             }

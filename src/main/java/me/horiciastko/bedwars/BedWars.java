@@ -71,12 +71,16 @@ public class BedWars extends JavaPlugin {
 
 
     public void sendActionBar(Player player, String message) {
-        if (player == null || message == null)
+        if (player == null || !player.isOnline() || message == null || message.isEmpty())
             return;
         try {
             com.cryptomorin.xseries.messages.ActionBar.sendActionBar(player, message);
-        } catch (Exception e) {
-            player.sendMessage(message);
+        } catch (Throwable t) {
+            try {
+                player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
+                        net.md_5.bungee.api.chat.TextComponent.fromLegacyText(message));
+            } catch (Throwable ignored) {
+            }
         }
     }
 

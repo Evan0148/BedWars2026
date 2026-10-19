@@ -742,18 +742,25 @@ public class GameListener implements Listener {
             ItemStack picked = event.getItem().getItemStack();
             if (arena.isExpMode()) {
                 if (picked.getType() == Material.IRON_INGOT) {
-                    int levels = picked.getAmount();
+                    int levels = picked.getAmount() * 1;
                     event.setCancelled(true);
                     event.getItem().remove();
-                    player.setLevel(player.getLevel() + levels);
+                    BedWars.getInstance().getGameManager().addExpModeLevels(player, levels);
                     player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.2f);
                     return;
                 } else if (picked.getType() == Material.GOLD_INGOT) {
-                    int levels = picked.getAmount() * 4;
+                    int levels = picked.getAmount() * 10;
                     event.setCancelled(true);
                     event.getItem().remove();
-                    player.setLevel(player.getLevel() + levels);
+                    BedWars.getInstance().getGameManager().addExpModeLevels(player, levels);
                     player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7f, 1.3f);
+                    return;
+                } else if (picked.getType() == Material.EMERALD) {
+                    int levels = picked.getAmount() * 100;
+                    event.setCancelled(true);
+                    event.getItem().remove();
+                    BedWars.getInstance().getGameManager().addExpModeLevels(player, levels);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.4f);
                     return;
                 } else if (picked.getType() == Material.EXPERIENCE_BOTTLE) {
                     String expTag = me.horiciastko.bedwars.utils.ItemTagUtils.getTag(picked, "bw_exp_type");
@@ -770,7 +777,7 @@ public class GameListener implements Listener {
                     int totalLevels = levels * picked.getAmount();
                     event.setCancelled(true);
                     event.getItem().remove();
-                    player.setLevel(player.getLevel() + totalLevels);
+                    BedWars.getInstance().getGameManager().addExpModeLevels(player, totalLevels);
                     player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.4f);
                     return;
                 }

@@ -62,6 +62,7 @@ player-die-fireball-final: "{PlayerColor}{PlayerName} &7was fireballed by {Kille
 game-starting: "&eThe game starts in &c%seconds% &eseconds!"
 game-starting-cancelled: "&cCountdown cancelled! Not enough players."
 game-starting-actionbar: "&fGame starts in &e%seconds%&fs!"
+actionbar-exp-gained: "&a+%amount% Exp Level(s)"
 game-started:
   - "&e&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   - " "

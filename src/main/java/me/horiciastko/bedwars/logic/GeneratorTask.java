@@ -523,15 +523,7 @@ public class GeneratorTask extends BukkitRunnable {
         int expPoints = 0;
         String customName = null;
 
-        if (isExpMode) {
-            if (material == Material.EMERALD) {
-                actualMaterial = Material.EXPERIENCE_BOTTLE;
-                expTypeTag = "bw_exp_emerald";
-                expPoints = 5; // 代表5级经验
-                customName = "§b高级经验瓶 §7(+5 级经验)";
-            }
-        }
-
+        // In exp mode, emeralds spawn normally and convert to 100 EXP levels on pickup
         for (Location loc : locations) {
             if (loc == null || loc.getWorld() == null)
                 continue;
