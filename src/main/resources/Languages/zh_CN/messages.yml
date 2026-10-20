@@ -22,6 +22,7 @@ cmd-leave-success: "&c你已离开游戏，期待下次再战！"
 cmd-leave-not-in: "&c你当前不在任何游戏中。"
 lobby-leave-item: "&c&l返回大厅 &7(右键点击)"
 lobby-team-select-item: "&a&l选择队伍 &7(右键点击)"
+lobby-force-start-item: "&b&l强制开始游戏 &7(右键点击)"
 arena-send-lobby: "&c游戏已结束！正在传送回大厅..."
 
 # --- 游戏交互 ---

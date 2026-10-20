@@ -22,6 +22,7 @@ cmd-leave-success: "&cYou have left the game. See you next time!"
 cmd-leave-not-in: "&cYou are not currently in any game."
 lobby-leave-item: "&c&lBack to Lobby &7(Right Click)"
 lobby-team-select-item: "&a&lSelect Team &7(Right Click)"
+lobby-force-start-item: "&b&lForce Start Game &7(Right Click)"
 arena-send-lobby: "&cThe game has ended! Sending you back to the lobby..."
 
 # --- Game Interaction ---

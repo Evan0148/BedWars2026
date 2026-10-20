@@ -22,6 +22,7 @@ cmd-leave-success: "&cOpuściłeś grę. Do zobaczenia następnym razem!"
 cmd-leave-not-in: "&cNie jesteś obecnie w żadnej grze."
 lobby-leave-item: "&c&lPowrót do Lobby &7(Prawy Klik)"
 lobby-team-select-item: "&a&lWybierz Drużynę &7(Prawy Klik)"
+lobby-force-start-item: "&b&lWymuś Start Gry &7(Prawy Klik)"
 arena-send-lobby: "&cGra się zakończyła! Wysyłanie do lobby..."
 
 # --- Interakcje w Grze ---

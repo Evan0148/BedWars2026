@@ -36,6 +36,31 @@ public class LobbyItemListener implements Listener {
                 new me.horiciastko.bedwars.gui.TeamSelectGUI(arena).open(player);
                 event.setCancelled(true);
             }
+        } else if ("lobby_force_start".equals(special)) {
+            Player player = event.getPlayer();
+            if (!player.hasPermission("bedwars.admin")) {
+                player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "admin-no-permission"));
+                event.setCancelled(true);
+                return;
+            }
+            me.horiciastko.bedwars.models.Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(player);
+            if (arena != null) {
+                if (arena.getState() == me.horiciastko.bedwars.models.Arena.GameState.WAITING ||
+                        arena.getState() == me.horiciastko.bedwars.models.Arena.GameState.STARTING) {
+                    if (arena.getPlayers().isEmpty()) {
+                        player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "admin-start-no-players")
+                                .replace("%name%", arena.getName()));
+                    } else {
+                        BedWars.getInstance().getGameManager().forceStart(arena);
+                        player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "admin-start-forced")
+                                .replace("%name%", arena.getName()));
+                        try {
+                            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
+                        } catch (Throwable ignored) {}
+                    }
+                }
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -74,6 +99,6 @@ public class LobbyItemListener implements Listener {
             return false;
         }
         String special = me.horiciastko.bedwars.utils.ItemTagUtils.getTag(item, "special_item");
-        return "lobby_leave".equals(special) || "lobby_team_select".equals(special);
+        return "lobby_leave".equals(special) || "lobby_team_select".equals(special) || "lobby_force_start".equals(special);
     }
 }

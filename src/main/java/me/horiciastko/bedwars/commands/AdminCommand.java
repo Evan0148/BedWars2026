@@ -494,20 +494,25 @@ public class AdminCommand implements SubCommand {
                 player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-arena-usage"));
             }
         } else if (args[1].equalsIgnoreCase("start")) {
+            Arena arena = null;
             if (args.length < 3) {
-                player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-start-usage"));
-                return;
-            }
-            String arenaName = args[2];
-            Arena arena = plugin.getArenaManager().getArena(arenaName);
-            if (arena == null) {
-                player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-arena-not-found")
-                    .replace("%name%", arenaName));
-                return;
+                arena = plugin.getArenaManager().getPlayerArena(player);
+                if (arena == null) {
+                    player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-start-usage"));
+                    return;
+                }
+            } else {
+                String arenaName = args[2];
+                arena = plugin.getArenaManager().getArena(arenaName);
+                if (arena == null) {
+                    player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-arena-not-found")
+                        .replace("%name%", arenaName));
+                    return;
+                }
             }
             if (arena.getPlayers().isEmpty()) {
                 player.sendMessage(plugin.getLanguageManager().getMessage(player.getUniqueId(), "admin-start-no-players")
-                    .replace("%name%", arenaName));
+                    .replace("%name%", arena.getName()));
                 return;
             }
             plugin.getGameManager().forceStart(arena);

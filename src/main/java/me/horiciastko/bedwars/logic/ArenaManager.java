@@ -714,6 +714,23 @@ public class ArenaManager {
         player.getInventory().setArmorContents(null);
         updateTeamSelectItem(player, arena);
 
+        if (player.hasPermission("bedwars.admin")) {
+            org.bukkit.inventory.ItemStack startItem = com.cryptomorin.xseries.XMaterial.DIAMOND.parseItem();
+            if (startItem == null)
+                startItem = new org.bukkit.inventory.ItemStack(org.bukkit.Material.DIAMOND);
+            org.bukkit.inventory.meta.ItemMeta startMeta = startItem.getItemMeta();
+            if (startMeta != null) {
+                String title = plugin.getLanguageManager().getMessage(player.getUniqueId(), "lobby-force-start-item");
+                if (title == null || title.startsWith("§cMissing path:")) {
+                    title = "&b&l强制开始游戏 &7(右键点击)";
+                }
+                startMeta.setDisplayName(org.bukkit.ChatColor.translateAlternateColorCodes('&', title));
+                startItem.setItemMeta(startMeta);
+            }
+            me.horiciastko.bedwars.utils.ItemTagUtils.setTag(startItem, "special_item", "lobby_force_start");
+            player.getInventory().setItem(1, startItem);
+        }
+
         org.bukkit.inventory.ItemStack leaveItem = com.cryptomorin.xseries.XMaterial.RED_BED.parseItem();
         if (leaveItem == null)
             leaveItem = new org.bukkit.inventory.ItemStack(org.bukkit.Material.BARRIER);

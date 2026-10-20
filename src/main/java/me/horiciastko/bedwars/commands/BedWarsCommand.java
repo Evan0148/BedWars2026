@@ -19,6 +19,7 @@ public class BedWarsCommand implements CommandExecutor, TabCompleter {
         subCommands.add(new JoinCommand(plugin));
         subCommands.add(new LobbyCommand(plugin));
         subCommands.add(new AdminCommand(plugin));
+        subCommands.add(new StartCommand(plugin));
         subCommands.add(new LeaveCommand(plugin));
         subCommands.add(new RejoinCommand(plugin));
         subCommands.add(new StatsCommand(plugin));
@@ -27,7 +28,7 @@ public class BedWarsCommand implements CommandExecutor, TabCompleter {
 
     public SubCommand getSubCommand(String name) {
         for (SubCommand sub : subCommands) {
-            if (sub.getName().equalsIgnoreCase(name)) return sub;
+            if (sub.getName().equalsIgnoreCase(name) || (sub.getName().equalsIgnoreCase("start") && name.equalsIgnoreCase("forcestart"))) return sub;
         }
         return null;
     }
@@ -47,7 +48,7 @@ public class BedWarsCommand implements CommandExecutor, TabCompleter {
         }
 
         for (SubCommand sub : subCommands) {
-            if (sub.getName().equalsIgnoreCase(args[0])) {
+            if (sub.getName().equalsIgnoreCase(args[0]) || (sub.getName().equalsIgnoreCase("start") && args[0].equalsIgnoreCase("forcestart"))) {
                 sub.perform(player, args);
                 return true;
             }
@@ -61,7 +62,7 @@ public class BedWarsCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(" ");
         player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "help-title"));
         for (SubCommand sub : subCommands) {
-            if (sub.getName().equalsIgnoreCase("admin"))
+            if (sub.getName().equalsIgnoreCase("admin") || (sub.getName().equalsIgnoreCase("start") && !player.hasPermission("bedwars.admin")))
                 continue;
             player.sendMessage(BedWars.getInstance().getLanguageManager().getMessage(player.getUniqueId(), "help-command").replace("%syntax%", sub.getSyntax()).replace("%description%", sub.getDescription()));
         }
@@ -78,18 +79,21 @@ public class BedWarsCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             for (SubCommand sub : subCommands) {
-                if (sub.getName().equalsIgnoreCase("admin") && !player.hasPermission("bedwars.admin")) {
+                if ((sub.getName().equalsIgnoreCase("admin") || sub.getName().equalsIgnoreCase("start")) && !player.hasPermission("bedwars.admin")) {
                     continue;
                 }
                 if (sub.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
                     suggestions.add(sub.getName());
                 }
             }
+            if (player.hasPermission("bedwars.admin") && "forcestart".startsWith(args[0].toLowerCase())) {
+                suggestions.add("forcestart");
+            }
             return suggestions;
         }
 
         for (SubCommand sub : subCommands) {
-            if (sub.getName().equalsIgnoreCase(args[0])) {
+            if (sub.getName().equalsIgnoreCase(args[0]) || (sub.getName().equalsIgnoreCase("start") && args[0].equalsIgnoreCase("forcestart"))) {
                 return sub.tabComplete(player, args);
             }
         }
