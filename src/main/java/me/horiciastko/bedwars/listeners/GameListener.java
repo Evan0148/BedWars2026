@@ -48,7 +48,10 @@ public class GameListener implements Listener {
         new org.bukkit.scheduler.BukkitRunnable() {
             @Override
             public void run() {
-                syncInvisibleArmorState();
+                try {
+                    syncInvisibleArmorState();
+                } catch (Throwable ignored) {
+                }
             }
         }.runTaskTimer(BedWars.getInstance(), 1L, 20L);
     }
@@ -341,13 +344,40 @@ public class GameListener implements Listener {
     }
 
     private void spawnInvisibilityParticles(Player invisiblePlayer) {
+        if (invisiblePlayer == null || !invisiblePlayer.isOnline()) return;
         Arena arena = BedWars.getInstance().getArenaManager().getPlayerArena(invisiblePlayer);
-        if (arena == null) return;
+        if (arena == null || arena.getState() != Arena.GameState.IN_GAME) return;
 
         org.bukkit.Location loc = invisiblePlayer.getLocation().add(0, 1.0, 0);
+        org.bukkit.Particle particle = null;
+        try {
+            particle = org.bukkit.Particle.valueOf("ENTITY_EFFECT");
+        } catch (Throwable ignored) {
+            try {
+                particle = org.bukkit.Particle.valueOf("SPELL_MOB");
+            } catch (Throwable ignored2) {}
+        }
+        if (particle == null) return;
+
+        Class<?> dataType = null;
+        try {
+            dataType = particle.getDataType();
+        } catch (Throwable ignored) {}
+
         for (Player viewer : arena.getPlayers()) {
-            if (viewer.equals(invisiblePlayer)) continue;
-            viewer.spawnParticle(org.bukkit.Particle.SPELL_MOB, loc, 5, 0.25, 0.4, 0.25, 0);
+            if (viewer == null || !viewer.isOnline() || viewer.equals(invisiblePlayer)) continue;
+            if (!viewer.getWorld().equals(invisiblePlayer.getWorld())) continue;
+            try {
+                if (dataType == org.bukkit.Color.class) {
+                    viewer.spawnParticle(particle, loc, 5, 0.25, 0.4, 0.25, 0.0, org.bukkit.Color.fromRGB(200, 200, 200));
+                } else {
+                    viewer.spawnParticle(particle, loc, 5, 0.25, 0.4, 0.25, 0.0);
+                }
+            } catch (Throwable t) {
+                try {
+                    viewer.spawnParticle(particle, loc, 5, 0.25, 0.4, 0.25, 0.0, org.bukkit.Color.fromRGB(200, 200, 200));
+                } catch (Throwable ignored) {}
+            }
         }
     }
 

@@ -1315,8 +1315,20 @@ public class GameManager {
 
                     double distSq = dragonLoc.distanceSquared(block.getLocation().add(0.5, 0.5, 0.5));
                     if (distSq <= radius * radius) {
-                        world.spawnParticle(org.bukkit.Particle.BLOCK_CRACK, block.getLocation().add(0.5, 0.5, 0.5),
-                                5, 0.3, 0.3, 0.3, block.getBlockData());
+                        try {
+                            org.bukkit.Particle particle = null;
+                            try {
+                                particle = org.bukkit.Particle.valueOf("BLOCK");
+                            } catch (Throwable ignored) {
+                                try {
+                                    particle = org.bukkit.Particle.valueOf("BLOCK_CRACK");
+                                } catch (Throwable ignored2) {}
+                            }
+                            if (particle != null) {
+                                world.spawnParticle(particle, block.getLocation().add(0.5, 0.5, 0.5),
+                                        5, 0.3, 0.3, 0.3, block.getBlockData());
+                            }
+                        } catch (Throwable ignored) {}
                         block.setType(org.bukkit.Material.AIR);
                     }
                 }
